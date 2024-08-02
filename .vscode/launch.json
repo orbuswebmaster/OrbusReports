@@ -1,0 +1,62 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Snapshot",
+            "request": "snapshotInitialize",
+            "type": "al",
+            "tenant": "09c433f2-4ad2-49f4-b0e7-8562e0331493",
+            "environmentType": "Production",
+            "environmentName": "Production",
+            "breakOnNext": "WebClient",
+            "executionContext": "Debug",
+            "snapshotVerbosity": "Full",
+            "userId": "bcadmin"
+        },
+        {
+            "name": "SandBox_DEV_060224",
+            "request": "launch",
+            "type": "al",
+            "tenant": "09c433f2-4ad2-49f4-b0e7-8562e0331493",
+            "environmentType": "Sandbox",
+            "environmentName": "SandBox_DEV_060224",
+            "startupObjectId": 9305,
+            "startupObjectType": "Page",
+            "breakOnError": true,
+            "launchBrowser": true,
+            "enableLongRunningSqlStatements": true,
+            "enableSqlInformationDebugger": true,
+            "schemaUpdateMode": "ForceSync"
+        },
+        {
+            "name": "SandBox_ISV_UAT_033124",
+            "request": "launch",
+            "type": "al",
+            "tenant": "09c433f2-4ad2-49f4-b0e7-8562e0331493",
+            "environmentType": "Sandbox",
+            "environmentName": "SandBox_ISV_UAT_033124",
+            "startupObjectId": 9305,
+            "startupObjectType": "Page",
+            "breakOnError": true,
+            "launchBrowser": true,
+            "enableLongRunningSqlStatements": true,
+            "enableSqlInformationDebugger": true,
+            "schemaUpdateMode": "Synchronize"
+        },
+        {
+            "name": "Sandbox_Magento_030524",
+            "request": "launch",
+            "type": "al",
+            "tenant": "09c433f2-4ad2-49f4-b0e7-8562e0331493",
+            "environmentType": "Sandbox",
+            "environmentName": "Sandbox_Magento_030524",
+            "startupObjectId": 9305,
+            "startupObjectType": "Page",
+            "breakOnError": true,
+            "launchBrowser": true,
+            "enableLongRunningSqlStatements": true,
+            "enableSqlInformationDebugger": true,
+            "schemaUpdateMode": "Synchronize"
+        }
+    ]
+}

@@ -1,0 +1,87 @@
+{
+  "id": "f8d3d8de-1d19-4c9f-913d-ba91ad53d40b",
+  "name": "OrbusReports",
+  "publisher": "Alex Vescovi",
+  "version": "1.0.0.202",
+  "runtime": "11.0",
+  "target": "Cloud",
+  "application": "21.5.53619.53813",
+  "platform": "1.0.0.0",
+  "resourceExposurePolicy": {
+    "allowDebugging": true,
+    "allowDownloadingSource": true,
+    "includeSourceInSymbolFile": true
+  },
+  "features": [
+    "NOIMPLICITWITH"
+  ],
+  "dependencies": [
+    {
+      "id": "ba1776ba-1198-4b4c-a61e-c4612f1880d5",
+      "name": "IWorks Common",
+      "version": "2.8.8308.1",
+      "publisher": "Insight Works"
+    },
+    {
+      "id": "12968b6e-b233-40e8-8ebc-160ee407d489",
+      "name": "Shop Floor Insight",
+      "version": "7.10.0.0",
+      "publisher": "Insight Works"
+    },
+    {
+      "id": "9c55319d-f3b9-441b-9956-0a0a04decd4b",
+      "name": "Dynamic Ship: Integrated Shipping",
+      "version": "2.7.8343.1",
+      "publisher": "Insight Works"
+    },
+    {
+      "id": "c670dab0-a6c8-4702-9416-3e3328c52ebb",
+      "name": "License Plate Management",
+      "version": "1.93.8314.1",
+      "publisher": "Insight Works"
+    },
+    {
+      "id": "f1731958-49e1-425c-a5a5-11fd8f39b59e",
+      "name": "Orbus_LongDescription",
+      "version": "1.0.0.11",
+      "publisher": "KP"
+    },
+    {
+      "id": "5fedf952-2450-4bce-b578-f3b7c13cd9a9",
+      "name": "Avalara AvaTax",
+      "version": "21.4.16.2",
+      "publisher": "Avalara"
+    },
+    {
+      "id": "a0972a12-b028-4717-a767-b26da3864425",
+      "name": "OrbusApp",
+      "version": "1.0.1.18",
+      "publisher": "Orbus"
+    },
+    {
+      "id": "0f30fcab-5ea0-4345-ba83-a32015759fbe",
+      "name": "Versapay Payments",
+      "version": "4.4.0.4646",
+      "publisher": "Varsapay"
+    },
+    {
+      "id": "df96d6a1-d9e1-40bf-8677-4292d3e7e73c",
+      "name": "RealLicensing",
+      "version": "4.200.1.130",
+      "publisher": "Wolcott System Group"
+    },
+    {
+      "id": "c1fa90e6-b104-4f49-8c79-e74e63c14409",
+      "name": "RealCase Management",
+      "version": "4.190.1.102",
+      "publisher": "Wolcott System Group"
+    }
+  ],
+  "idRanges": [
+    {
+      "from": 55000,
+      "to": 56000
+    }
+  ]
+}
+
