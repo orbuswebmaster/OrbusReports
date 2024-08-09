@@ -231,7 +231,7 @@ pageextension 55159 CasePageExt extends "Case Card WSG"
             field("Contact Email 2"; Rec."Contact Email 2")
             {
                 ApplicationArea = All;
-                Caption = 'Contact Email';
+                Caption = 'Contact Email 2';
 
                 trigger OnLookup(var Text: Text): Boolean
                 var
