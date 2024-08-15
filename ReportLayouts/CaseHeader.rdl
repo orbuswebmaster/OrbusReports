@@ -2409,6 +2409,9 @@ i+LduZP39igKUejHeI7sjeaqJBnSdEBbRb+SrPc5RCf4E+RvIIO4/l9if9Z5C/flp3QEfYhVHNn7oL5D
         <Field Name="Responsible_Owner">
           <DataField>Responsible_Owner</DataField>
         </Field>
+        <Field Name="Resolution_Code">
+          <DataField>Resolution_Code</DataField>
+        </Field>
       </Fields>
       <Query>
         <DataSourceName>DataSource</DataSourceName>
