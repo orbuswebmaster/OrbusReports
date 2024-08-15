@@ -74,6 +74,9 @@ report 55195 CaseHeader
             column(Responsible_Owner; "Responsible Owner Current")
             {
             }
+            column(Resolution_Code; "Resolution Code")
+            {
+            }
             trigger OnPreDataItem()
             var
             begin
@@ -83,29 +86,40 @@ report 55195 CaseHeader
                 "Case WSG".SetFilter("Department Specification", DepartmentSpecification);
                 if StatusVar <> StatusVar::Blank then "Case WSG".SetRange(Status, StatusVar);
                 if LocationCode <> '' then "Case WSG".SetFilter("Location Code", LocationCode);
-                if(StartingDate <> 0D) and (EndingDate <> 0D)then "Case WSG".SetFilter(SystemCreatedAt, Format(StartingDate) + '..' + Format(EndingDate));
-                if(StartingDate <> 0D) and (EndingDate = 0D)then "Case WSG".SetFilter(SystemCreatedAt, '>=' + Format(StartingDate));
-                if(StartingDate = 0D) and (EndingDate <> 0D)then "Case WSG".SetFilter(SystemCreatedAt, '<=' + Format(EndingDate));
+                if (StartingDate <> 0D) and (EndingDate <> 0D) then "Case WSG".SetFilter(SystemCreatedAt, Format(StartingDate) + '..' + Format(EndingDate));
+                if (StartingDate <> 0D) and (EndingDate = 0D) then "Case WSG".SetFilter(SystemCreatedAt, '>=' + Format(StartingDate));
+                if (StartingDate = 0D) and (EndingDate <> 0D) then "Case WSG".SetFilter(SystemCreatedAt, '<=' + Format(EndingDate));
                 "Case WSG".SetCurrentKey("Reason Code");
                 //"Case WSG".SetCurrentKey("Department Specification");
-                if AscendingVar = AscendingVar::Ascending then "Case WSG".Ascending(true)
+                if AscendingVar = AscendingVar::Ascending then
+                    "Case WSG".Ascending(true)
                 else
                     "Case WSG".Ascending(false);
             end;
+
             trigger OnAfterGetRecord()
             var
                 CaseHeaderVar: Record "Case WSG";
             begin
-                DurationText:='';
-                Duration:=0;
-                if("Case WSG"."Resolution Date 2" = 0D) and ("Case WSG"."Assigned Date" <> 0D)then Duration:=Today() - "Case WSG"."Assigned Date";
-                if("Case WSG"."Assigned Date" = 0D) and ("Case WSG"."Resolution Date 2" = 0D)then Duration:=0;
-                if("Case WSG"."Resolution Date 2" <> 0D) and ("Case WSG"."Assigned Date" <> 0D)then Duration:="Case WSG"."Resolution Date 2" - "Case WSG"."Assigned Date";
-                DurationText:=Format(Duration) + ' Days';
-                if DurationText = '0 Days' then DurationText:='N/A';
-            //CaseHeaderVar.Reset();
-            //CaseHeaderVar.SetFilter("Reason Code", ReasonCode);
-            //CaseHeaderVar.SetFilter();
+                DurationText := '';
+                Duration := 0;
+                if ("Case WSG"."Resolution Date 2" = 0D) and ("Case WSG"."Assigned Date" <> 0D) then
+                    Duration := Today() - "Case WSG"."Assigned Date";
+                if ("Case WSG"."Assigned Date" = 0D) and ("Case WSG"."Resolution Date 2" = 0D) then
+                    Duration := 0;
+                if ("Case WSG"."Resolution Date 2" <> 0D) and ("Case WSG"."Assigned Date" <> 0D) then
+                    Duration := "Case WSG"."Resolution Date 2" - "Case WSG"."Assigned Date";
+
+                //DurationText := Format(Duration) + ' Days';
+                DurationText := Format(Duration);
+                //if DurationText = '0 Days'
+                if DurationText = '0'
+                  then
+                    //DurationText := 'N/A';
+                    DurationText := '0';
+                //CaseHeaderVar.Reset();
+                //CaseHeaderVar.SetFilter("Reason Code", ReasonCode);
+                //CaseHeaderVar.SetFilter();
             end;
         }
     }
@@ -119,16 +133,18 @@ report 55195 CaseHeader
                 {
                     ApplicationArea = All;
 
-                    trigger OnLookup(var Text: Text): Boolean var
+                    trigger OnLookup(var Text: Text): Boolean
+                    var
                         CaseReasonWSG: Record "Case Reason Code WSG";
                         var1: Integer;
                         CaseReasonListPage: Page "Case Reason Codes WSG";
                     begin
                         CaseReasonListPage.LookupMode(true);
                         if CaseReasonListPage.RunModal() = Action::LookupOK then begin
-                            ReasonCode:=CaseReasonListPage.ProduceValues();
+                            ReasonCode := CaseReasonListPage.ProduceValues();
                         end;
                     end;
+
                     trigger OnValidate()
                     var
                         CaseReasonWSG: Record "Case Reason Code WSG";
@@ -136,7 +152,8 @@ report 55195 CaseHeader
                     begin
                         CaseReasonWSG.Reset();
                         CaseReasonWSG.SetFilter(Code, ReasonCode);
-                        if CaseReasonWSG.FindFirst()then var1:=1
+                        if CaseReasonWSG.FindFirst() then
+                            var1 := 1
                         else
                             Error('Data/Value modified for reason code global variable is not based on existing record in "Reason Code" table');
                     end;
@@ -145,13 +162,15 @@ report 55195 CaseHeader
                 {
                     ApplicationArea = All;
 
-                    trigger OnLookup(var Text: Text): Boolean var
+                    trigger OnLookup(var Text: Text): Boolean
+                    var
                         CustomerList: Page "Customer List";
                         Customer: Record Customer;
                     begin
                         CustomerList.LookupMode(true);
-                        if CustomerList.RunModal() = Action::LookupOK then CustomerName:=CustomerList.ProduceValues2();
+                        if CustomerList.RunModal() = Action::LookupOK then CustomerName := CustomerList.ProduceValues2();
                     end;
+
                     trigger OnValidate()
                     var
                         CustomerList: Page "Customer List";
@@ -160,7 +179,8 @@ report 55195 CaseHeader
                     begin
                         Customer.Reset();
                         Customer.SetFilter(Name, CustomerName);
-                        if Customer.FindSet()then var1:=1
+                        if Customer.FindSet() then
+                            var1 := 1
                         else
                             Error('Data/Value in Customer Name global variable has to be based on existing record in Customer Table');
                     end;
@@ -169,16 +189,18 @@ report 55195 CaseHeader
                 {
                     ApplicationArea = All;
 
-                    trigger OnLookup(var Text: Text): Boolean var
+                    trigger OnLookup(var Text: Text): Boolean
+                    var
                         CaseReasonDetail: Record CaseReasonDetail;
                         var1: Integer;
                         CaseReasonDetailPageVar: Page CaseReasonDetailList;
                     begin
                         CaseReasonDetailPageVar.LookupMode(true);
                         if CaseReasonDetailPageVar.RunModal() = Action::LookupOK then begin
-                            DepartmentSpecification:=CaseReasonDetailPageVar.ProduceValues();
+                            DepartmentSpecification := CaseReasonDetailPageVar.ProduceValues();
                         end;
                     end;
+
                     trigger OnValidate()
                     var
                         CaseReasonWSG: Record "Case Reason Code WSG";
@@ -186,7 +208,8 @@ report 55195 CaseHeader
                     begin
                         CaseReasonWSG.Reset();
                         CaseReasonWSG.SetFilter(Code, ReasonCode);
-                        if CaseReasonWSG.FindFirst()then var1:=1
+                        if CaseReasonWSG.FindFirst() then
+                            var1 := 1
                         else
                             Error('Data/Value modified for reason code global variable is not based on existing record in "Reason Code" table');
                     end;
@@ -202,15 +225,18 @@ report 55195 CaseHeader
                     begin
                         Location.Reset();
                         Location.SetFilter(Code, LocationCode);
-                        if Location.FindFirst()then var1:=1
+                        if Location.FindFirst() then
+                            var1 := 1
                         else
                             Error('Data/Value needs to be based on existing record in Location table');
                     end;
-                    trigger OnLookup(var Text: Text): Boolean var
+
+                    trigger OnLookup(var Text: Text): Boolean
+                    var
                         Location: Record Location;
                         var1: Integer;
                     begin
-                        if Page.RunModal(Page::"Location List", Location) = Action::LookupOK then LocationCode:=Location.Code;
+                        if Page.RunModal(Page::"Location List", Location) = Action::LookupOK then LocationCode := Location.Code;
                     end;
                 }
                 field(StatusVar; StatusVar)
@@ -235,33 +261,36 @@ report 55195 CaseHeader
         trigger OnOpenPage()
         var
         begin
-            StatusVar:=StatusVar::Blank;
+            StatusVar := StatusVar::Blank;
         end;
     }
-    var ReasonCode: Text;
-    CustomerName: Text;
-    DepartmentSpecification: Text;
-    StartingDate: Date;
-    EndingDate: Date;
-    UserID: Text;
-    DateTimeProduced: Text;
-    NoOfRecords: Integer;
-    Duration: Integer;
-    AscendingVar: Enum AscendingDescending;
-    DurationText: Text;
-    LocationCode: Text;
-    StatusVar: enum "Case Statuses WSG";
+    var
+        ReasonCode: Text;
+        CustomerName: Text;
+        DepartmentSpecification: Text;
+        StartingDate: Date;
+        EndingDate: Date;
+        UserID: Text;
+        DateTimeProduced: Text;
+        NoOfRecords: Integer;
+        Duration: Integer;
+        AscendingVar: Enum AscendingDescending;
+        DurationText: Text;
+        LocationCode: Text;
+        StatusVar: enum "Case Statuses WSG";
+
     trigger OnInitReport()
     var
     begin
-        UserID:=UserID();
-        DateTimeProduced:=Format(CurrentDateTime, 0, '<Month,2>/<Day,2>/<Year4> <Hours12>:<Minutes,2> <AM/PM>');
+        UserID := UserID();
+        DateTimeProduced := Format(CurrentDateTime, 0, '<Month,2>/<Day,2>/<Year4> <Hours12>:<Minutes,2> <AM/PM>');
     end;
+
     procedure GetValues(DepSpec: Text; ReasCode: Text; CustName: Text)
     var
     begin
-        ReasonCode:=ReasCode;
-        DepartmentSpecification:=DepSpec;
-        CustomerName:=CustName;
+        ReasonCode := ReasCode;
+        DepartmentSpecification := DepSpec;
+        CustomerName := CustName;
     end;
 }
