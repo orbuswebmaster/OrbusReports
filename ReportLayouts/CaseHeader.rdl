@@ -11,6 +11,91 @@
       <rd:DataSourceID>b23244e3-9790-4712-be0f-6041ac5f0e69</rd:DataSourceID>
     </DataSource>
   </DataSources>
+  <DataSets>
+    <DataSet Name="DataSet_Result">
+      <Query>
+        <DataSourceName>DataSource</DataSourceName>
+        <CommandText />
+      </Query>
+      <Fields>
+        <Field Name="No">
+          <DataField>No</DataField>
+        </Field>
+        <Field Name="EntityName">
+          <DataField>EntityName</DataField>
+        </Field>
+        <Field Name="EntityNo">
+          <DataField>EntityNo</DataField>
+        </Field>
+        <Field Name="SalesHeaderNo">
+          <DataField>SalesHeaderNo</DataField>
+        </Field>
+        <Field Name="SalesInvoiceHeaderNo">
+          <DataField>SalesInvoiceHeaderNo</DataField>
+        </Field>
+        <Field Name="SalesQuoteNo">
+          <DataField>SalesQuoteNo</DataField>
+        </Field>
+        <Field Name="ReasonCode">
+          <DataField>ReasonCode</DataField>
+        </Field>
+        <Field Name="AssignedDate">
+          <DataField>AssignedDate</DataField>
+        </Field>
+        <Field Name="ResolutionDate">
+          <DataField>ResolutionDate</DataField>
+        </Field>
+        <Field Name="AssignedUserID">
+          <DataField>AssignedUserID</DataField>
+        </Field>
+        <Field Name="ReasonNotes">
+          <DataField>ReasonNotes</DataField>
+        </Field>
+        <Field Name="SecondCase">
+          <DataField>SecondCase</DataField>
+        </Field>
+        <Field Name="Status">
+          <DataField>Status</DataField>
+        </Field>
+        <Field Name="UserID">
+          <DataField>UserID</DataField>
+        </Field>
+        <Field Name="DateTimeProduced">
+          <DataField>DateTimeProduced</DataField>
+        </Field>
+        <Field Name="NoOfRecords">
+          <DataField>NoOfRecords</DataField>
+        </Field>
+        <Field Name="Duration">
+          <DataField>Duration</DataField>
+        </Field>
+        <Field Name="AscendingVar">
+          <DataField>AscendingVar</DataField>
+        </Field>
+        <Field Name="DurationText">
+          <DataField>DurationText</DataField>
+        </Field>
+        <Field Name="Location_Code">
+          <DataField>Location_Code</DataField>
+        </Field>
+        <Field Name="DepartmentSpecification">
+          <DataField>DepartmentSpecification</DataField>
+        </Field>
+        <Field Name="Responsible_Owner">
+          <DataField>Responsible_Owner</DataField>
+        </Field>
+        <Field Name="Resolution_Code">
+          <DataField>Resolution_Code</DataField>
+        </Field>
+        <Field Name="Shipment_Date">
+          <DataField>Shipment_Date</DataField>
+        </Field>
+        <Field Name="Shipment_Date_Cap">
+          <DataField>Shipment_Date_Cap</DataField>
+        </Field>
+      </Fields>
+    </DataSet>
+  </DataSets>
   <ReportSections>
     <ReportSection>
       <Body>
@@ -19,37 +104,40 @@
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
-                  <Width>0.95017in</Width>
+                  <Width>0.87062in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>1.29166in</Width>
+                  <Width>1.21211in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>1.21609in</Width>
-                </TablixColumn>
-                <TablixColumn>
-                  <Width>1.36458in</Width>
-                </TablixColumn>
-                <TablixColumn>
-                  <Width>1.10417in</Width>
-                </TablixColumn>
-                <TablixColumn>
-                  <Width>1.15154in</Width>
-                </TablixColumn>
-                <TablixColumn>
-                  <Width>0.8125in</Width>
-                </TablixColumn>
-                <TablixColumn>
-                  <Width>1.07292in</Width>
+                  <Width>1.13654in</Width>
                 </TablixColumn>
                 <TablixColumn>
                   <Width>1in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>0.69792in</Width>
+                  <Width>1.28503in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>0.85416in</Width>
+                  <Width>1.02462in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>1.07199in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>0.73295in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>0.99337in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>0.92045in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>0.61837in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>0.77461in</Width>
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
@@ -153,6 +241,40 @@
                             <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox3">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!Shipment_Date_Cap.Value</Value>
+                                  <Style>
+                                    <FontWeight>Bold</FontWeight>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Left</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox3</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>None</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                        <rd:Selected>true</rd:Selected>
                       </CellContents>
                     </TablixCell>
                     <TablixCell>
@@ -539,6 +661,42 @@
                     </TablixCell>
                     <TablixCell>
                       <CellContents>
+                        <Textbox Name="Shipment_Date">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!Shipment_Date.Value</Value>
+                                  <Style />
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Left</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Shipment_Date</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>None</Style>
+                            </Border>
+                            <BottomBorder>
+                              <Color>Gray</Color>
+                              <Style>Solid</Style>
+                              <Width>1pt</Width>
+                            </BottomBorder>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
                         <Textbox Name="Textbox17">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
@@ -842,6 +1000,7 @@
                 <TablixMember />
                 <TablixMember />
                 <TablixMember />
+                <TablixMember />
               </TablixMembers>
             </TablixColumnHierarchy>
             <TablixRowHierarchy>
@@ -854,10 +1013,11 @@
                 </TablixMember>
               </TablixMembers>
             </TablixRowHierarchy>
+            <DataSetName>DataSet_Result</DataSetName>
             <Top>0.57292in</Top>
             <Left>0.03472in</Left>
             <Height>0.5in</Height>
-            <Width>11.51571in</Width>
+            <Width>11.64071in</Width>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -868,7 +1028,7 @@
         <Height>2.15557in</Height>
         <Style />
       </Body>
-      <Width>11.5921in</Width>
+      <Width>11.67543in</Width>
       <Page>
         <PageHeader>
           <Height>1.23833in</Height>
@@ -1006,6 +1166,12 @@
       </Page>
     </ReportSection>
   </ReportSections>
+  <ReportParametersLayout>
+    <GridLayoutDefinition>
+      <NumberOfColumns>4</NumberOfColumns>
+      <NumberOfRows>2</NumberOfRows>
+    </GridLayoutDefinition>
+  </ReportParametersLayout>
   <Code>Public Function BlankZero(ByVal Value As Decimal)
     if Value = 0 then
         Return ""
@@ -2340,83 +2506,4 @@ i+LduZP39igKUejHeI7sjeaqJBnSdEBbRb+SrPc5RCf4E+RvIIO4/l9if9Z5C/flp3QEfYhVHNn7oL5D
   <ConsumeContainerWhitespace>true</ConsumeContainerWhitespace>
   <rd:ReportUnitType>Inch</rd:ReportUnitType>
   <rd:ReportID>0eeb6585-38ae-40f1-885b-8d50088d51b4</rd:ReportID>
-  <DataSets>
-    <DataSet Name="DataSet_Result">
-      <Fields>
-        <Field Name="No">
-          <DataField>No</DataField>
-        </Field>
-        <Field Name="EntityName">
-          <DataField>EntityName</DataField>
-        </Field>
-        <Field Name="EntityNo">
-          <DataField>EntityNo</DataField>
-        </Field>
-        <Field Name="SalesHeaderNo">
-          <DataField>SalesHeaderNo</DataField>
-        </Field>
-        <Field Name="SalesInvoiceHeaderNo">
-          <DataField>SalesInvoiceHeaderNo</DataField>
-        </Field>
-        <Field Name="SalesQuoteNo">
-          <DataField>SalesQuoteNo</DataField>
-        </Field>
-        <Field Name="ReasonCode">
-          <DataField>ReasonCode</DataField>
-        </Field>
-        <Field Name="AssignedDate">
-          <DataField>AssignedDate</DataField>
-        </Field>
-        <Field Name="ResolutionDate">
-          <DataField>ResolutionDate</DataField>
-        </Field>
-        <Field Name="AssignedUserID">
-          <DataField>AssignedUserID</DataField>
-        </Field>
-        <Field Name="ReasonNotes">
-          <DataField>ReasonNotes</DataField>
-        </Field>
-        <Field Name="SecondCase">
-          <DataField>SecondCase</DataField>
-        </Field>
-        <Field Name="Status">
-          <DataField>Status</DataField>
-        </Field>
-        <Field Name="UserID">
-          <DataField>UserID</DataField>
-        </Field>
-        <Field Name="DateTimeProduced">
-          <DataField>DateTimeProduced</DataField>
-        </Field>
-        <Field Name="NoOfRecords">
-          <DataField>NoOfRecords</DataField>
-        </Field>
-        <Field Name="Duration">
-          <DataField>Duration</DataField>
-        </Field>
-        <Field Name="AscendingVar">
-          <DataField>AscendingVar</DataField>
-        </Field>
-        <Field Name="DurationText">
-          <DataField>DurationText</DataField>
-        </Field>
-        <Field Name="Location_Code">
-          <DataField>Location_Code</DataField>
-        </Field>
-        <Field Name="DepartmentSpecification">
-          <DataField>DepartmentSpecification</DataField>
-        </Field>
-        <Field Name="Responsible_Owner">
-          <DataField>Responsible_Owner</DataField>
-        </Field>
-        <Field Name="Resolution_Code">
-          <DataField>Resolution_Code</DataField>
-        </Field>
-      </Fields>
-      <Query>
-        <DataSourceName>DataSource</DataSourceName>
-        <CommandText />
-      </Query>
-    </DataSet>
-  </DataSets>
 </Report>
