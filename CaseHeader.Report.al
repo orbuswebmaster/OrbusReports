@@ -77,6 +77,12 @@ report 55195 CaseHeader
             column(Resolution_Code; "Resolution Code")
             {
             }
+            column(Shipment_Date; "Shipment Date")
+            {
+            }
+            column(Shipment_Date_Cap; FieldCaption("Shipment Date"))
+            {
+            }
             trigger OnPreDataItem()
             var
             begin
