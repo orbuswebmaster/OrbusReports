@@ -77,7 +77,7 @@ report 55195 CaseHeader
             column(Resolution_Code; "Resolution Code")
             {
             }
-            column(Shipment_Date; "Shipment Date")
+            column(Shipment_Date; Format("Shipment Date", 0, '<Month,2>/<Day,2>/<Year4>'))
             {
             }
             column(Shipment_Date_Cap; FieldCaption("Shipment Date"))
