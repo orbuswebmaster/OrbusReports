@@ -10,7 +10,7 @@ report 55103 "Orbus- Blanket Sales Order"
     {
         dataitem(Header; "Sales Header")
         {
-            DataItemTableView = SORTING("Document Type", "No.")WHERE("Document Type"=CONST("Blanket Order"));
+            DataItemTableView = SORTING("Document Type", "No.") WHERE("Document Type" = CONST("Blanket Order"));
             RequestFilterFields = "No.", "Sell-to Customer No.", "No. Printed";
             RequestFilterHeading = 'Blanket Sales Order';
 
@@ -511,7 +511,7 @@ report 55103 "Orbus- Blanket Sales Order"
             }
             dataitem(Line; "Sales Line")
             {
-                DataItemLink = "Document No."=FIELD("No.");
+                DataItemLink = "Document No." = FIELD("No.");
                 DataItemLinkReference = Header;
                 DataItemTableView = SORTING("Document No.", "Line No.");
                 UseTemporary = true;
@@ -521,21 +521,21 @@ report 55103 "Orbus- Blanket Sales Order"
                 }
                 column(AmountExcludingVAT_Line; Amount)
                 {
-                AutoFormatExpression = "Currency Code";
-                AutoFormatType = 1;
+                    AutoFormatExpression = "Currency Code";
+                    AutoFormatType = 1;
                 }
                 column(AmountExcludingVAT_Line_Lbl; FieldCaption(Amount))
                 {
                 }
                 column(AmountIncludingVAT_Line; "Amount Including VAT")
                 {
-                AutoFormatExpression = Header."Currency Code";
-                AutoFormatType = 1;
+                    AutoFormatExpression = Header."Currency Code";
+                    AutoFormatType = 1;
                 }
                 column(AmountIncludingVAT_Line_Lbl; FieldCaption("Amount Including VAT"))
                 {
-                AutoFormatExpression = Header."Currency Code";
-                AutoFormatType = 1;
+                    AutoFormatExpression = Header."Currency Code";
+                    AutoFormatType = 1;
                 }
                 column(Description_Line; Description)
                 {
@@ -551,8 +551,8 @@ report 55103 "Orbus- Blanket Sales Order"
                 }
                 column(LineAmount_Line; FormattedLineAmount)
                 {
-                AutoFormatExpression = "Currency Code";
-                AutoFormatType = 1;
+                    AutoFormatExpression = "Currency Code";
+                    AutoFormatType = 1;
                 }
                 column(LineAmount_Line_Lbl; FieldCaption("Line Amount"))
                 {
@@ -586,8 +586,8 @@ report 55103 "Orbus- Blanket Sales Order"
                 }
                 column(UnitPrice; FormattedUnitPrice)
                 {
-                AutoFormatExpression = "Currency Code";
-                AutoFormatType = 2;
+                    AutoFormatExpression = "Currency Code";
+                    AutoFormatType = 2;
                 }
                 column(UnitPrice_Lbl; FieldCaption("Unit Price"))
                 {
@@ -612,8 +612,8 @@ report 55103 "Orbus- Blanket Sales Order"
                 }
                 column(TransHeaderAmount; TransHeaderAmount)
                 {
-                AutoFormatExpression = "Currency Code";
-                AutoFormatType = 1;
+                    AutoFormatExpression = "Currency Code";
+                    AutoFormatType = 1;
                 }
                 column(UnitPrice_Lbl2; UnitPriceLbl)
                 {
@@ -650,40 +650,42 @@ report 55103 "Orbus- Blanket Sales Order"
                 }
                 trigger OnAfterGetRecord()
                 begin
-                    if Type = Type::"G/L Account" then "No.":='';
-                    if "Line Discount %" = 0 then LineDiscountPctText:=''
+                    if Type = Type::"G/L Account" then "No." := '';
+                    if "Line Discount %" = 0 then
+                        LineDiscountPctText := ''
                     else
-                        LineDiscountPctText:=StrSubstNo('%1%', -Round("Line Discount %", 0.1));
-                    TransHeaderAmount+=PrevLineAmount;
-                    PrevLineAmount:="Line Amount";
-                    TotalSubTotal+="Line Amount";
-                    TotalInvDiscAmount-="Inv. Discount Amount";
-                    TotalAmount+=Amount;
-                    TotalAmountVAT+="Amount Including VAT" - Amount;
-                    TotalAmountInclVAT+="Amount Including VAT";
-                    TotalPaymentDiscOnVAT+=-("Line Amount" - "Inv. Discount Amount" - "Amount Including VAT");
+                        LineDiscountPctText := StrSubstNo('%1%', -Round("Line Discount %", 0.1));
+                    TransHeaderAmount += PrevLineAmount;
+                    PrevLineAmount := "Line Amount";
+                    TotalSubTotal += "Line Amount";
+                    TotalInvDiscAmount -= "Inv. Discount Amount";
+                    TotalAmount += Amount;
+                    TotalAmountVAT += "Amount Including VAT" - Amount;
+                    TotalAmountInclVAT += "Amount Including VAT";
+                    TotalPaymentDiscOnVAT += -("Line Amount" - "Inv. Discount Amount" - "Amount Including VAT");
                     OnAfterCalculateSalesTax(Header, Line, TotalAmount, TotalAmountVAT, TotalAmountInclVAT);
                     FormatDocument.SetSalesLine(Line, FormattedQuantity, FormattedUnitPrice, FormattedVATPct, FormattedLineAmount);
                     if FirstLineHasBeenOutput then Clear(DummyCompanyInfo.Picture);
-                    FirstLineHasBeenOutput:=true;
+                    FirstLineHasBeenOutput := true;
                     GetSalesLineComments();
                     GetOrderTotal();
                 end;
+
                 trigger OnPreDataItem()
                 begin
-                    MoreLines:=Find('+');
-                    while MoreLines and (Description = '') and ("No." = '') and (Quantity = 0) and (Amount = 0)do MoreLines:=Next(-1) <> 0;
+                    MoreLines := Find('+');
+                    while MoreLines and (Description = '') and ("No." = '') and (Quantity = 0) and (Amount = 0) do MoreLines := Next(-1) <> 0;
                     if not MoreLines then CurrReport.Break();
                     SetRange("Line No.", 0, "Line No.");
-                    TransHeaderAmount:=0;
-                    PrevLineAmount:=0;
-                    FirstLineHasBeenOutput:=false;
-                    DummyCompanyInfo.Picture:=CompanyInfo.Picture;
+                    TransHeaderAmount := 0;
+                    PrevLineAmount := 0;
+                    FirstLineHasBeenOutput := false;
+                    DummyCompanyInfo.Picture := CompanyInfo.Picture;
                 end;
             }
             dataitem(WorkDescriptionLines; "Integer")
             {
-                DataItemTableView = SORTING(Number)WHERE(Number=FILTER(1..99999));
+                DataItemTableView = SORTING(Number) WHERE(Number = FILTER(1 .. 99999));
 
                 column(WorkDescriptionLineNumber; Number)
                 {
@@ -696,9 +698,12 @@ report 55103 "Orbus- Blanket Sales Order"
                     if WorkDescriptionInstream.EOS then CurrReport.Break();
                     WorkDescriptionInstream.ReadText(WorkDescriptionLine);
                 end;
+
                 trigger OnPostDataItem()
                 begin
-                    Clear(WorkDescriptionInstream)end;
+                    Clear(WorkDescriptionInstream)
+                end;
+
                 trigger OnPreDataItem()
                 begin
                     if not ShowWorkDescription then CurrReport.Break();
@@ -712,32 +717,32 @@ report 55103 "Orbus- Blanket Sales Order"
 
                 column(InvoiceDiscountAmount_VATAmountLine; "Invoice Discount Amount")
                 {
-                AutoFormatExpression = Header."Currency Code";
-                AutoFormatType = 1;
+                    AutoFormatExpression = Header."Currency Code";
+                    AutoFormatType = 1;
                 }
                 column(InvoiceDiscountAmount_VATAmountLine_Lbl; FieldCaption("Invoice Discount Amount"))
                 {
                 }
                 column(InvoiceDiscountBaseAmount_VATAmountLine; "Inv. Disc. Base Amount")
                 {
-                AutoFormatExpression = Header."Currency Code";
-                AutoFormatType = 1;
+                    AutoFormatExpression = Header."Currency Code";
+                    AutoFormatType = 1;
                 }
                 column(InvoiceDiscountBaseAmount_VATAmountLine_Lbl; FieldCaption("Inv. Disc. Base Amount"))
                 {
                 }
                 column(LineAmount_VatAmountLine; "Line Amount")
                 {
-                AutoFormatExpression = Header."Currency Code";
-                AutoFormatType = 1;
+                    AutoFormatExpression = Header."Currency Code";
+                    AutoFormatType = 1;
                 }
                 column(LineAmount_VatAmountLine_Lbl; FieldCaption("Line Amount"))
                 {
                 }
                 column(VATAmount_VatAmountLine; "VAT Amount")
                 {
-                AutoFormatExpression = Header."Currency Code";
-                AutoFormatType = 1;
+                    AutoFormatExpression = Header."Currency Code";
+                    AutoFormatType = 1;
                 }
                 column(VATAmount_VatAmountLine_Lbl; FieldCaption("VAT Amount"))
                 {
@@ -750,8 +755,8 @@ report 55103 "Orbus- Blanket Sales Order"
                 }
                 column(VATBase_VatAmountLine; "VAT Base")
                 {
-                AutoFormatExpression = Header."Currency Code";
-                AutoFormatType = 1;
+                    AutoFormatExpression = Header."Currency Code";
+                    AutoFormatType = 1;
                 }
                 column(VATBase_VatAmountLine_Lbl; FieldCaption("VAT Base"))
                 {
@@ -770,7 +775,7 @@ report 55103 "Orbus- Blanket Sales Order"
                 }
                 column(VATPct_VatAmountLine; "VAT %")
                 {
-                DecimalPlaces = 0: 5;
+                    DecimalPlaces = 0 : 5;
                 }
                 column(VATPct_VatAmountLine_Lbl; FieldCaption("VAT %"))
                 {
@@ -780,17 +785,18 @@ report 55103 "Orbus- Blanket Sales Order"
                 }
                 trigger OnAfterGetRecord()
                 begin
-                    VATBaseLCY:=GetBaseLCY(Header."Posting Date", Header."Currency Code", Header."Currency Factor");
-                    VATAmountLCY:=GetAmountLCY(Header."Posting Date", Header."Currency Code", Header."Currency Factor");
-                    TotalVATBaseLCY+=VATBaseLCY;
-                    TotalVATAmountLCY+=VATAmountLCY;
+                    VATBaseLCY := GetBaseLCY(Header."Posting Date", Header."Currency Code", Header."Currency Factor");
+                    VATAmountLCY := GetAmountLCY(Header."Posting Date", Header."Currency Code", Header."Currency Factor");
+                    TotalVATBaseLCY += VATBaseLCY;
+                    TotalVATAmountLCY += VATAmountLCY;
                 end;
+
                 trigger OnPreDataItem()
                 begin
                     Clear(VATBaseLCY);
                     Clear(VATAmountLCY);
-                    TotalVATBaseLCY:=0;
-                    TotalVATAmountLCY:=0;
+                    TotalVATBaseLCY := 0;
+                    TotalVATAmountLCY := 0;
                 end;
             }
             dataitem(ReportTotalsLine; "Report Totals Buffer")
@@ -820,7 +826,7 @@ report 55103 "Orbus- Blanket Sales Order"
             }
             dataitem(LetterText; "Integer")
             {
-                DataItemTableView = SORTING(Number)WHERE(Number=CONST(1));
+                DataItemTableView = SORTING(Number) WHERE(Number = CONST(1));
 
                 column(GreetingText; GreetingLbl)
                 {
@@ -836,8 +842,8 @@ report 55103 "Orbus- Blanket Sales Order"
                 }
                 trigger OnPreDataItem()
                 begin
-                    PmtDiscText:='';
-                    if Header."Payment Discount %" <> 0 then PmtDiscText:=StrSubstNo(PmtDiscTxt, Header."Pmt. Discount Date", Header."Payment Discount %");
+                    PmtDiscText := '';
+                    if Header."Payment Discount %" <> 0 then PmtDiscText := StrSubstNo(PmtDiscTxt, Header."Pmt. Discount Date", Header."Payment Discount %");
                 end;
             }
             dataitem(USReportTotalsLine; "Report Totals Buffer")
@@ -867,33 +873,33 @@ report 55103 "Orbus- Blanket Sales Order"
             }
             dataitem(Totals; "Integer")
             {
-                DataItemTableView = SORTING(Number)WHERE(Number=CONST(1));
+                DataItemTableView = SORTING(Number) WHERE(Number = CONST(1));
 
                 column(TotalNetAmount; TotalAmount)
                 {
-                AutoFormatExpression = Header."Currency Code";
-                AutoFormatType = 1;
+                    AutoFormatExpression = Header."Currency Code";
+                    AutoFormatType = 1;
                 }
                 column(TotalVATBaseLCY; TotalVATBaseLCY)
                 {
                 }
                 column(TotalAmountIncludingVAT; Format(TotalAmountInclVAT, 0, AutoFormat.ResolveAutoFormat("Auto Format"::AmountFormat, Header."Currency Code")))
                 {
-                AutoFormatExpression = Header."Currency Code";
-                AutoFormatType = 1;
+                    AutoFormatExpression = Header."Currency Code";
+                    AutoFormatType = 1;
                 }
                 column(TotalVATAmount; TotalAmountVAT)
                 {
-                AutoFormatExpression = Header."Currency Code";
-                AutoFormatType = 1;
+                    AutoFormatExpression = Header."Currency Code";
+                    AutoFormatType = 1;
                 }
                 column(TotalVATAmountLCY; TotalVATAmountLCY)
                 {
                 }
                 column(TotalInvoiceDiscountAmount; TotalInvDiscAmount)
                 {
-                AutoFormatExpression = Header."Currency Code";
-                AutoFormatType = 1;
+                    AutoFormatExpression = Header."Currency Code";
+                    AutoFormatType = 1;
                 }
                 column(TotalPaymentDiscountOnVAT; TotalPaymentDiscOnVAT)
                 {
@@ -909,8 +915,8 @@ report 55103 "Orbus- Blanket Sales Order"
                 }
                 column(TotalSubTotal; TotalSubTotal)
                 {
-                AutoFormatExpression = Header."Currency Code";
-                AutoFormatType = 1;
+                    AutoFormatExpression = Header."Currency Code";
+                    AutoFormatType = 1;
                 }
                 column(TotalSubTotalMinusInvoiceDiscount; TotalSubTotal + TotalInvDiscAmount)
                 {
@@ -945,7 +951,7 @@ report 55103 "Orbus- Blanket Sales Order"
                 ArchiveManagement: Codeunit ArchiveManagement;
                 SalesPost: Codeunit "Sales-Post";
             begin
-                FirstLineHasBeenOutput:=false;
+                FirstLineHasBeenOutput := false;
                 Clear(Line);
                 Clear(SalesPost);
                 VATAmountLine.DeleteAll();
@@ -955,36 +961,40 @@ report 55103 "Orbus- Blanket Sales Order"
                 Line.UpdateVATOnLines(0, Header, Line, VATAmountLine);
                 Line.CalcSalesTaxLines(Header, Line);
                 OnBeforeCalculateSalesTax(Header, Line, VATAmountLine);
-                if not IsReportInPreviewMode()then CODEUNIT.Run(CODEUNIT::"Sales-Printed", Header);
+                if not IsReportInPreviewMode() then CODEUNIT.Run(CODEUNIT::"Sales-Printed", Header);
                 SetLanguage("Language Code");
                 CalcFields("Work Description");
-                ShowWorkDescription:="Work Description".HasValue;
+                ShowWorkDescription := "Work Description".HasValue;
                 FormatAddr.GetCompanyAddr("Responsibility Center", RespCenter, CompanyInfo, CompanyAddr);
                 FormatAddr.SalesHeaderBillTo(CustAddr, Header);
-                ShowShippingAddr:=FormatAddr.SalesHeaderShipTo(ShipToAddr, CustAddr, Header);
-                if not CompanyBankAccount.Get(Header."Company Bank Account Code")then CompanyBankAccount.CopyBankFieldsFromCompanyInfo(CompanyInfo);
-                if not Cust.Get("Bill-to Customer No.")then Clear(Cust);
+                ShowShippingAddr := FormatAddr.SalesHeaderShipTo(ShipToAddr, CustAddr, Header);
+                if not CompanyBankAccount.Get(Header."Company Bank Account Code") then CompanyBankAccount.CopyBankFieldsFromCompanyInfo(CompanyInfo);
+                if not Cust.Get("Bill-to Customer No.") then Clear(Cust);
                 if "Currency Code" <> '' then begin
                     CurrencyExchangeRate.FindCurrency("Posting Date", "Currency Code", 1);
-                    CalculatedExchRate:=Round(1 / "Currency Factor" * CurrencyExchangeRate."Exchange Rate Amount", 0.000001);
-                    ExchangeRateText:=StrSubstNo(ExchangeRateTxt, CalculatedExchRate, CurrencyExchangeRate."Exchange Rate Amount");
-                    CurrCode:="Currency Code";
-                    if Currency.Get("Currency Code")then CurrSymbol:=Currency.GetCurrencySymbol();
+                    CalculatedExchRate := Round(1 / "Currency Factor" * CurrencyExchangeRate."Exchange Rate Amount", 0.000001);
+                    ExchangeRateText := StrSubstNo(ExchangeRateTxt, CalculatedExchRate, CurrencyExchangeRate."Exchange Rate Amount");
+                    CurrCode := "Currency Code";
+                    if Currency.Get("Currency Code") then CurrSymbol := Currency.GetCurrencySymbol();
                 end
-                else if GeneralLedgerSetup.Get()then begin
-                        CurrCode:=GeneralLedgerSetup."LCY Code";
-                        CurrSymbol:=GeneralLedgerSetup.GetCurrencySymbol();
+                else if GeneralLedgerSetup.Get() then begin
+                    CurrCode := GeneralLedgerSetup."LCY Code";
+                    CurrSymbol := GeneralLedgerSetup.GetCurrencySymbol();
+                end;
+                if SellToContact.Get("Sell-to Contact No.") then;
+                if BillToContact.Get("Bill-to Contact No.") then;
+                if not IsReportInPreviewMode() and (CurrReport.UseRequestPage and ArchiveDocument or not CurrReport.UseRequestPage and (SalesSetup."Archive Quotes" <> SalesSetup."Archive Quotes"::Never)) then
+                    case SalesSetup."Archive Quotes" of
+                        SalesSetup."Archive Quotes"::Always:
+                            ArchiveManagement.ArchSalesDocumentNoConfirm(Header);
+                        SalesSetup."Archive Quotes"::Question:
+                            ArchiveManagement.ArchiveSalesDocument(Header);
                     end;
-                if SellToContact.Get("Sell-to Contact No.")then;
-                if BillToContact.Get("Bill-to Contact No.")then;
-                if not IsReportInPreviewMode() and (CurrReport.UseRequestPage and ArchiveDocument or not CurrReport.UseRequestPage and (SalesSetup."Archive Quotes" <> SalesSetup."Archive Quotes"::Never))then case SalesSetup."Archive Quotes" of SalesSetup."Archive Quotes"::Always: ArchiveManagement.ArchSalesDocumentNoConfirm(Header);
-                    SalesSetup."Archive Quotes"::Question: ArchiveManagement.ArchiveSalesDocument(Header);
-                    end;
-                TotalSubTotal:=0;
-                TotalInvDiscAmount:=0;
-                TotalAmount:=0;
-                TotalAmountVAT:=0;
-                TotalAmountInclVAT:=0;
+                TotalSubTotal := 0;
+                TotalInvDiscAmount := 0;
+                TotalAmount := 0;
+                TotalAmountVAT := 0;
+                TotalAmountInclVAT := 0;
                 GetDescriptionValues();
                 GetPaymentTermsLongDescription();
                 GetSalesReceivablesTextValue();
@@ -992,9 +1002,10 @@ report 55103 "Orbus- Blanket Sales Order"
                 GetLocationName();
                 GetIWValues();
             end;
+
             trigger OnPreDataItem()
             begin
-                FirstLineHasBeenOutput:=false;
+                FirstLineHasBeenOutput := false;
             end;
         }
     }
@@ -1025,7 +1036,7 @@ report 55103 "Orbus- Blanket Sales Order"
 
                         trigger OnValidate()
                         begin
-                            if not ArchiveDocument then LogInteraction:=false;
+                            if not ArchiveDocument then LogInteraction := false;
                         end;
                     }
                 }
@@ -1036,13 +1047,14 @@ report 55103 "Orbus- Blanket Sales Order"
         }
         trigger OnInit()
         begin
-            LogInteractionEnable:=true;
-            ArchiveDocument:=SalesSetup."Archive Quotes" <> SalesSetup."Archive Quotes"::Never;
+            LogInteractionEnable := true;
+            ArchiveDocument := SalesSetup."Archive Quotes" <> SalesSetup."Archive Quotes"::Never;
         end;
+
         trigger OnOpenPage()
         begin
             InitLogInteraction();
-            LogInteractionEnable:=LogInteraction;
+            LogInteractionEnable := LogInteraction;
         end;
     }
     labels
@@ -1056,186 +1068,205 @@ report 55103 "Orbus- Blanket Sales Order"
         SalesSetup.Get();
         CompanyInfo.VerifyAndSetPaymentInfo();
     end;
+
     trigger OnPostReport()
     begin
-        if LogInteraction and not IsReportInPreviewMode()then if Header.FindSet()then repeat Header.CalcFields("No. of Archived Versions");
-                    if Header."Bill-to Contact No." <> '' then SegManagement.LogDocument(1, Header."No.", Header."Doc. No. Occurrence", Header."No. of Archived Versions", DATABASE::Contact, Header."Bill-to Contact No.", Header."Salesperson Code", Header."Campaign No.", Header."Posting Description", Header."Opportunity No.")
+        if LogInteraction and not IsReportInPreviewMode() then
+            if Header.FindSet() then
+                repeat
+                    Header.CalcFields("No. of Archived Versions");
+                    if Header."Bill-to Contact No." <> '' then
+                        SegManagement.LogDocument(1, Header."No.", Header."Doc. No. Occurrence", Header."No. of Archived Versions", DATABASE::Contact, Header."Bill-to Contact No.", Header."Salesperson Code", Header."Campaign No.", Header."Posting Description", Header."Opportunity No.")
                     else
                         SegManagement.LogDocument(1, Header."No.", Header."Doc. No. Occurrence", Header."No. of Archived Versions", DATABASE::Customer, Header."Bill-to Customer No.", Header."Salesperson Code", Header."Campaign No.", Header."Posting Description", Header."Opportunity No.");
                 until Header.Next() = 0;
     end;
+
     trigger OnPreReport()
     begin
         if Header.GetFilters = '' then Error(NoFilterSetErr);
         if not CurrReport.UseRequestPage then InitLogInteraction();
-        CompanyLogoPosition:=SalesSetup."Logo Position on Documents";
+        CompanyLogoPosition := SalesSetup."Logo Position on Documents";
     end;
-    var GLSetup: Record "General Ledger Setup";
-    CompanyBankAccount: Record "Bank Account";
-    CompanyInfo: Record "Company Information";
-    DummyCompanyInfo: Record "Company Information";
-    SalesSetup: Record "Sales & Receivables Setup";
-    Cust: Record Customer;
-    RespCenter: Record "Responsibility Center";
-    VATClause: Record "VAT Clause";
-    SellToContact: Record Contact;
-    BillToContact: Record Contact;
-    Language1: Codeunit Language;
-    FormatAddr: Codeunit "Format Address";
-    FormatDocument: Codeunit "Format Document";
-    SegManagement: Codeunit SegManagement;
-    AutoFormat: Codeunit "Auto Format";
-    WorkDescriptionInstream: InStream;
-    WorkDescriptionLine: Text;
-    CustAddr: array[8]of Text[100];
-    ShipToAddr: array[8]of Text[100];
-    CompanyAddr: array[8]of Text[100];
-    SalesPersonText: Text[50];
-    TotalText: Text[50];
-    TotalExclVATText: Text[50];
-    TotalInclVATText: Text[50];
-    LineDiscountPctText: Text;
-    FormattedVATPct: Text;
-    FormattedUnitPrice: Text;
-    FormattedQuantity: Text;
-    FormattedLineAmount: Text;
-    MoreLines: Boolean;
-    ShowWorkDescription: Boolean;
-    CopyText: Text[30];
-    ShowShippingAddr: Boolean;
-    ArchiveDocument: Boolean;
-    LogInteraction: Boolean;
-    TotalSubTotal: Decimal;
-    TotalAmount: Decimal;
-    TotalAmountInclVAT: Decimal;
-    TotalAmountVAT: Decimal;
-    TotalInvDiscAmount: Decimal;
-    TotalPaymentDiscOnVAT: Decimal;
-    TransHeaderAmount: Decimal;
-    [InDataSet]
-    LogInteractionEnable: Boolean;
-    CompanyLogoPosition: Integer;
-    CalculatedExchRate: Decimal;
-    ExchangeRateText: Text;
-    VATBaseLCY: Decimal;
-    VATAmountLCY: Decimal;
-    TotalVATBaseLCY: Decimal;
-    TotalVATAmountLCY: Decimal;
-    PrevLineAmount: Decimal;
-    PmtDiscText: Text;
-    CurrCode: Text[10];
-    CurrSymbol: Text[10];
-    Orbus_ShippingMethodDescription: Text;
-    Orbus_PaymentTermsLongDescription: Text;
-    Orbus_SellToCustomerName: Text;
-    Orbus_BillToCustomerName: Text;
-    Orbus_ShipToName: Text;
-    Orbus_SalesReceivablesTextValue: Text;
-    Orbus_UserName: Text;
-    Orbus_LocationName: Text;
-    Orbus_OrderTotal: Decimal;
-    Comment1: Text;
-    Comment2: Text;
-    SalesComments: Text;
-    Orbus_Line_Amount: Text;
-    Orbus_PaymentTermsDescription: Text;
-    Orbus_FreightTerms: Option " ", SENDER, THIRD_PARTY, RECEIVER, COLLECT;
-    Orbus_ShippingAcctNo: Text;
-    SalesConfirmationLbl: Label 'Sales Quote';
-    YourEstimateLbl: Label 'Your Estimate';
-    EstimateLbl: Label 'Estimate';
-    SalespersonLbl: Label 'Sales person';
-    CompanyInfoBankAccNoLbl: Label 'Account No.';
-    CompanyInfoBankNameLbl: Label 'Bank';
-    CompanyInfoGiroNoLbl: Label 'Giro No.';
-    CompanyInfoPhoneNoLbl: Label 'Phone No.';
-    CopyLbl: Label 'Copy';
-    EMailLbl: Label 'Email';
-    HomePageLbl: Label 'Home Page';
-    InvDiscBaseAmtLbl: Label 'Invoice Discount Base Amount';
-    InvDiscountAmtLbl: Label 'Invoice Discount';
-    InvNoLbl: Label 'No.';
-    LineAmtAfterInvDiscLbl: Label 'Payment Discount on VAT';
-    LocalCurrencyLbl: Label 'Local Currency';
-    PageLbl: Label 'Page';
-    PaymentMethodDescLbl: Label 'Payment Method';
-    PostedShipmentDateLbl: Label 'Shipment Date';
-    SalesInvLineDiscLbl: Label 'Discount %';
-    ShipmentLbl: Label 'Shipment';
-    ShiptoAddrLbl: Label 'Ship-to Address';
-    SubtotalLbl: Label 'Subtotal';
-    TotalLbl: Label 'Total';
-    UnitLbl: Label 'Unit';
-    VATAmtSpecificationLbl: Label 'VAT Amount Specification';
-    VATAmtLbl: Label 'VAT Amount';
-    VATAmountLCYLbl: Label 'VAT Amount (LCY)';
-    VATBaseLbl: Label 'VAT Base';
-    VATBaseLCYLbl: Label 'VAT Base (LCY)';
-    VATClausesLbl: Label 'VAT Clause';
-    VATIdentifierLbl: Label 'VAT Identifier';
-    VATPercentageLbl: Label 'VAT %';
-    ExchangeRateTxt: Label 'Exchange rate: %1/%2', Comment = '%1 and %2 are both amounts.';
-    NoFilterSetErr: Label 'You must specify one or more filters to avoid accidently printing all documents.';
-    FromLbl: Label 'From';
-    EstimateForLbl: Label 'Estimate for';
-    QuestionsLbl: Label 'Questions?';
-    ThanksLbl: Label 'Thank You!';
-    GreetingLbl: Label 'Hello';
-    ClosingLbl: Label 'Sincerely';
-    PmtDiscTxt: Label 'If we receive the payment before %1, you are eligible for a %2% payment discount.', Comment = '%1 = Discount Due Date %2 = value of Payment Discount % ';
-    BodyLbl: Label 'Thank you for your business. Your quote is attached to this message.';
-    EstimateBodyLbl: Label 'As promised, here''s our estimate. Please see the attached estimate for details.';
-    QuoteValidToDateLbl: Label 'Valid to';
-    QtyLbl: Label 'Qty', Comment = 'Short form of Quantity';
-    PriceLbl: Label 'Price';
-    PricePerLbl: Label 'Price per';
-    SellToContactPhoneNoLbl: Label 'Sell-to Contact Phone No.';
-    SellToContactMobilePhoneNoLbl: Label 'Sell-to Contact Mobile Phone No.';
-    SellToContactEmailLbl: Label 'Sell-to Contact E-Mail';
-    BillToContactPhoneNoLbl: Label 'Bill-to Contact Phone No.';
-    BillToContactMobilePhoneNoLbl: Label 'Bill-to Contact Mobile Phone No.';
-    BillToContactEmailLbl: Label 'Bill-to Contact E-Mail';
-    AmtSubjecttoSalesTaxLbl: Label 'Amount Subject to Sales Tax';
-    AmtExemptfromSalesTaxLbl: Label 'Amount Exempt from Sales Tax';
-    TotalTaxLbl: Label 'Total Tax';
-    UnitPriceLbl: Label 'Unit Price';
-    LineAmountLbl: Label 'Line Amount';
-    SalespersonLbl2: Label 'Salesperson';
-    protected var ShipmentMethod: Record "Shipment Method";
-    PaymentTerms: Record "Payment Terms";
-    PaymentMethod: Record "Payment Method";
-    SalespersonPurchaser: Record "Salesperson/Purchaser";
-    FirstLineHasBeenOutput: Boolean;
-    PaymentTermsDescLbl: Label 'Payment Terms';
-    ShptMethodDescLbl: Label 'Shipment Method';
+
+    var
+        GLSetup: Record "General Ledger Setup";
+        CompanyBankAccount: Record "Bank Account";
+        CompanyInfo: Record "Company Information";
+        DummyCompanyInfo: Record "Company Information";
+        SalesSetup: Record "Sales & Receivables Setup";
+        Cust: Record Customer;
+        RespCenter: Record "Responsibility Center";
+        VATClause: Record "VAT Clause";
+        SellToContact: Record Contact;
+        BillToContact: Record Contact;
+        Language1: Codeunit Language;
+        FormatAddr: Codeunit "Format Address";
+        FormatDocument: Codeunit "Format Document";
+        SegManagement: Codeunit SegManagement;
+        AutoFormat: Codeunit "Auto Format";
+        WorkDescriptionInstream: InStream;
+        WorkDescriptionLine: Text;
+        CustAddr: array[8] of Text[100];
+        ShipToAddr: array[8] of Text[100];
+        CompanyAddr: array[8] of Text[100];
+        SalesPersonText: Text[50];
+        TotalText: Text[50];
+        TotalExclVATText: Text[50];
+        TotalInclVATText: Text[50];
+        LineDiscountPctText: Text;
+        FormattedVATPct: Text;
+        FormattedUnitPrice: Text;
+        FormattedQuantity: Text;
+        FormattedLineAmount: Text;
+        MoreLines: Boolean;
+        ShowWorkDescription: Boolean;
+        CopyText: Text[30];
+        ShowShippingAddr: Boolean;
+        ArchiveDocument: Boolean;
+        LogInteraction: Boolean;
+        TotalSubTotal: Decimal;
+        TotalAmount: Decimal;
+        TotalAmountInclVAT: Decimal;
+        TotalAmountVAT: Decimal;
+        TotalInvDiscAmount: Decimal;
+        TotalPaymentDiscOnVAT: Decimal;
+        TransHeaderAmount: Decimal;
+        [InDataSet]
+        LogInteractionEnable: Boolean;
+        CompanyLogoPosition: Integer;
+        CalculatedExchRate: Decimal;
+        ExchangeRateText: Text;
+        VATBaseLCY: Decimal;
+        VATAmountLCY: Decimal;
+        TotalVATBaseLCY: Decimal;
+        TotalVATAmountLCY: Decimal;
+        PrevLineAmount: Decimal;
+        PmtDiscText: Text;
+        CurrCode: Text[10];
+        CurrSymbol: Text[10];
+        Orbus_ShippingMethodDescription: Text;
+        Orbus_PaymentTermsLongDescription: Text;
+        Orbus_SellToCustomerName: Text;
+        Orbus_BillToCustomerName: Text;
+        Orbus_ShipToName: Text;
+        Orbus_SalesReceivablesTextValue: Text;
+        Orbus_UserName: Text;
+        Orbus_LocationName: Text;
+        Orbus_OrderTotal: Decimal;
+        Comment1: Text;
+        Comment2: Text;
+        SalesComments: Text;
+        Orbus_Line_Amount: Text;
+        Orbus_PaymentTermsDescription: Text;
+        Orbus_FreightTerms: Option " ",SENDER,THIRD_PARTY,RECEIVER,COLLECT;
+        Orbus_ShippingAcctNo: Text;
+        SalesConfirmationLbl: Label 'Sales Quote';
+        YourEstimateLbl: Label 'Your Estimate';
+        EstimateLbl: Label 'Estimate';
+        SalespersonLbl: Label 'Sales person';
+        CompanyInfoBankAccNoLbl: Label 'Account No.';
+        CompanyInfoBankNameLbl: Label 'Bank';
+        CompanyInfoGiroNoLbl: Label 'Giro No.';
+        CompanyInfoPhoneNoLbl: Label 'Phone No.';
+        CopyLbl: Label 'Copy';
+        EMailLbl: Label 'Email';
+        HomePageLbl: Label 'Home Page';
+        InvDiscBaseAmtLbl: Label 'Invoice Discount Base Amount';
+        InvDiscountAmtLbl: Label 'Invoice Discount';
+        InvNoLbl: Label 'No.';
+        LineAmtAfterInvDiscLbl: Label 'Payment Discount on VAT';
+        LocalCurrencyLbl: Label 'Local Currency';
+        PageLbl: Label 'Page';
+        PaymentMethodDescLbl: Label 'Payment Method';
+        PostedShipmentDateLbl: Label 'Shipment Date';
+        SalesInvLineDiscLbl: Label 'Discount %';
+        ShipmentLbl: Label 'Shipment';
+        ShiptoAddrLbl: Label 'Ship-to Address';
+        SubtotalLbl: Label 'Subtotal';
+        TotalLbl: Label 'Total';
+        UnitLbl: Label 'Unit';
+        VATAmtSpecificationLbl: Label 'VAT Amount Specification';
+        VATAmtLbl: Label 'VAT Amount';
+        VATAmountLCYLbl: Label 'VAT Amount (LCY)';
+        VATBaseLbl: Label 'VAT Base';
+        VATBaseLCYLbl: Label 'VAT Base (LCY)';
+        VATClausesLbl: Label 'VAT Clause';
+        VATIdentifierLbl: Label 'VAT Identifier';
+        VATPercentageLbl: Label 'VAT %';
+        ExchangeRateTxt: Label 'Exchange rate: %1/%2', Comment = '%1 and %2 are both amounts.';
+        NoFilterSetErr: Label 'You must specify one or more filters to avoid accidently printing all documents.';
+        FromLbl: Label 'From';
+        EstimateForLbl: Label 'Estimate for';
+        QuestionsLbl: Label 'Questions?';
+        ThanksLbl: Label 'Thank You!';
+        GreetingLbl: Label 'Hello';
+        ClosingLbl: Label 'Sincerely';
+        PmtDiscTxt: Label 'If we receive the payment before %1, you are eligible for a %2% payment discount.', Comment = '%1 = Discount Due Date %2 = value of Payment Discount % ';
+        BodyLbl: Label 'Thank you for your business. Your quote is attached to this message.';
+        EstimateBodyLbl: Label 'As promised, here''s our estimate. Please see the attached estimate for details.';
+        QuoteValidToDateLbl: Label 'Valid to';
+        QtyLbl: Label 'Qty', Comment = 'Short form of Quantity';
+        PriceLbl: Label 'Price';
+        PricePerLbl: Label 'Price per';
+        SellToContactPhoneNoLbl: Label 'Sell-to Contact Phone No.';
+        SellToContactMobilePhoneNoLbl: Label 'Sell-to Contact Mobile Phone No.';
+        SellToContactEmailLbl: Label 'Sell-to Contact E-Mail';
+        BillToContactPhoneNoLbl: Label 'Bill-to Contact Phone No.';
+        BillToContactMobilePhoneNoLbl: Label 'Bill-to Contact Mobile Phone No.';
+        BillToContactEmailLbl: Label 'Bill-to Contact E-Mail';
+        AmtSubjecttoSalesTaxLbl: Label 'Amount Subject to Sales Tax';
+        AmtExemptfromSalesTaxLbl: Label 'Amount Exempt from Sales Tax';
+        TotalTaxLbl: Label 'Total Tax';
+        UnitPriceLbl: Label 'Unit Price';
+        LineAmountLbl: Label 'Line Amount';
+        SalespersonLbl2: Label 'Salesperson';
+
+    protected var
+        ShipmentMethod: Record "Shipment Method";
+        PaymentTerms: Record "Payment Terms";
+        PaymentMethod: Record "Payment Method";
+        SalespersonPurchaser: Record "Salesperson/Purchaser";
+        FirstLineHasBeenOutput: Boolean;
+        PaymentTermsDescLbl: Label 'Payment Terms';
+        ShptMethodDescLbl: Label 'Shipment Method';
+
     local procedure InitLogInteraction()
+    var
+        DocumentType: Enum "Interaction Log Entry Document Type";
     begin
-        LogInteraction:=SegManagement.FindInteractTmplCode(1) <> '';
+        LogInteraction := SegManagement.FindInteractionTemplateCode(DocumentType::"Sales Qte.") <> '';
     end;
-    local procedure DocumentCaption(): Text[250]begin
+
+    local procedure DocumentCaption(): Text[250]
+    begin
         exit(SalesConfirmationLbl);
     end;
+
     procedure InitializeRequest(NewLogInteraction: Boolean)
     begin
-        LogInteraction:=NewLogInteraction;
+        LogInteraction := NewLogInteraction;
     end;
-    local procedure IsReportInPreviewMode(): Boolean var
+
+    local procedure IsReportInPreviewMode(): Boolean
+    var
         MailManagement: Codeunit "Mail Management";
     begin
         exit(CurrReport.Preview or MailManagement.IsHandlingGetEmailBody());
     end;
+
     local procedure CreateReportTotalLines()
     var
         TempSalesTaxAmountLine: Record "Sales Tax Amount Line" temporary;
         TaxArea: Record "Tax Area";
     begin
         ReportTotalsLine.DeleteAll();
-        if Header."Tax Area Code" <> '' then if TaxArea.Get(Header."Tax Area Code")then;
-        if(Header."Tax Area Code" = '') or (TaxArea."Country/Region" = TaxArea."Country/Region"::US)then begin
+        if Header."Tax Area Code" <> '' then if TaxArea.Get(Header."Tax Area Code") then;
+        if (Header."Tax Area Code" = '') or (TaxArea."Country/Region" = TaxArea."Country/Region"::US) then begin
             CreateUSReportTotalLines();
             exit;
         end;
-        if(TotalInvDiscAmount <> 0) or (TotalAmountVAT <> 0)then ReportTotalsLine.Add(SubtotalLbl, TotalSubTotal, true, false, false, Header."Currency Code");
+        if (TotalInvDiscAmount <> 0) or (TotalAmountVAT <> 0) then ReportTotalsLine.Add(SubtotalLbl, TotalSubTotal, true, false, false, Header."Currency Code");
         if TotalInvDiscAmount <> 0 then begin
             ReportTotalsLine.Add(InvDiscountAmtLbl, TotalInvDiscAmount, false, false, false, Header."Currency Code");
             if TotalAmountVAT <> 0 then ReportTotalsLine.Add(TotalExclVATText, TotalAmount, true, false, false, Header."Currency Code");
@@ -1244,10 +1275,13 @@ report 55103 "Orbus- Blanket Sales Order"
             GetTaxSummarizedLines(TempSalesTaxAmountLine);
             TempSalesTaxAmountLine.SetCurrentKey("Print Order");
             TempSalesTaxAmountLine.Ascending(true);
-            if TempSalesTaxAmountLine.FindSet()then repeat ReportTotalsLine.Add(TempSalesTaxAmountLine."Print Description", TempSalesTaxAmountLine."Tax Amount", false, true, false, Header."Currency Code");
+            if TempSalesTaxAmountLine.FindSet() then
+                repeat
+                    ReportTotalsLine.Add(TempSalesTaxAmountLine."Print Description", TempSalesTaxAmountLine."Tax Amount", false, true, false, Header."Currency Code");
                 until TempSalesTaxAmountLine.Next() = 0;
         end;
     end;
+
     local procedure CreateUSReportTotalLines()
     begin
         ReportTotalsLine.DeleteAll();
@@ -1255,59 +1289,70 @@ report 55103 "Orbus- Blanket Sales Order"
         if TotalInvDiscAmount <> 0 then ReportTotalsLine.Add(InvDiscountAmtLbl, TotalInvDiscAmount, false, false, false, Header."Currency Code");
         ReportTotalsLine.Add(TotalTaxLbl, TotalAmountVAT, false, true, false, Header."Currency Code");
     end;
+
     local procedure GetTaxSummarizedLines(var TempSalesTaxAmountLine: Record "Sales Tax Amount Line" temporary)
     var
         TaxArea: Record "Tax Area";
         SalesTaxCalculate: Codeunit "Sales Tax Calculate";
     begin
-        if not TaxArea.Get(Header."Tax Area Code")then exit;
+        if not TaxArea.Get(Header."Tax Area Code") then exit;
         TempSalesTaxAmountLine.DeleteAll();
         SalesTaxCalculate.StartSalesTaxCalculation();
         Line.SetRange("Document Type", Header."Document Type");
         Line.SetRange("Document No.", Header."No.");
         Line.SetFilter(Quantity, '<>0');
         Line.SetFilter(Type, '>0');
-        if Line.Find('-')then repeat if not TaxArea."Use External Tax Engine" then SalesTaxCalculate.AddSalesLine(Line);
+        if Line.Find('-') then
+            repeat
+                if not TaxArea."Use External Tax Engine" then SalesTaxCalculate.AddSalesLine(Line);
             until Line.Next() = 0;
-        if TaxArea."Use External Tax Engine" then SalesTaxCalculate.CallExternalTaxEngineForSales(Header, true)
+        if TaxArea."Use External Tax Engine" then
+            SalesTaxCalculate.CallExternalTaxEngineForSales(Header, true)
         else
             SalesTaxCalculate.EndSalesTaxCalculation(Header."Posting Date");
         SalesTaxCalculate.GetSalesTaxAmountLineTable(TempSalesTaxAmountLine);
         SalesTaxCalculate.GetSummarizedSalesTaxTable(TempSalesTaxAmountLine);
     end;
+
     local procedure SetLanguage(LanguageCode: Code[10])
     begin
-        CurrReport.Language:=Language1.GetLanguageIdOrDefault(LanguageCode);
+        CurrReport.Language := Language1.GetLanguageIdOrDefault(LanguageCode);
     end;
+
     [IntegrationEvent(false, false)]
     local procedure OnAfterCalculateSalesTax(var SalesHeader: Record "Sales Header"; var SalesLine: Record "Sales Line"; var VATBaseAmount: Decimal; var VATAmount: Decimal; var TotalAmountInclVAT: Decimal);
     begin
     end;
+
     [IntegrationEvent(false, false)]
     local procedure OnBeforeCalculateSalesTax(var SalesHeader: Record "Sales Header"; var SalesLine: Record "Sales Line"; var VATAmountLine: Record "VAT Amount Line")
     begin
     end;
+
     local procedure GetDescriptionValues()
     var
         ShipmentMethod: Record "Shipment Method";
     begin
         ShipmentMethod.SetRange(Code, Header."Shipment Method Code");
-        if ShipmentMethod.FindFirst()then Orbus_ShippingMethodDescription:=ShipmentMethod.Description;
+        if ShipmentMethod.FindFirst() then Orbus_ShippingMethodDescription := ShipmentMethod.Description;
     end;
+
     local procedure GetPaymentTermsLongDescription()
     var
         PaymentTerms: Record "Payment Terms";
     begin
         PaymentTerms.SetRange(Code, Header."Payment Terms Code");
-        if PaymentTerms.FindFirst()then Orbus_PaymentTermsLongDescription:=PaymentTerms."Long Description";
+        if PaymentTerms.FindFirst() then Orbus_PaymentTermsLongDescription := PaymentTerms."Long Description";
     end;
+
     local procedure GetPaymentTermsDescription()
     var
         PaymentTerms: Record "Payment Terms";
     begin
         PaymentTerms.SetRange(Code, Header."Payment Terms Code");
-        if PaymentTerms.FindFirst()then Orbus_PaymentTermsDescription:=PaymentTerms.Description;
+        if PaymentTerms.FindFirst() then Orbus_PaymentTermsDescription := PaymentTerms.Description;
     end;
+
     local procedure GetSalesLineComments()
     var
         SalesCommentLine: Record "Sales Comment Line";
@@ -1315,57 +1360,67 @@ report 55103 "Orbus- Blanket Sales Order"
         TypeHelper: Codeunit "Type Helper";
         LineBreak: Text[2];
     begin
-        SalesComments:='';
-        LineBreak:=TypeHelper.CRLFSeparator();
+        SalesComments := '';
+        LineBreak := TypeHelper.CRLFSeparator();
         SalesCommentLine.Reset();
         SalesCommentLine.SetRange("No.", Line."Document No.");
         SalesCommentLine.SetRange("Document Line No.", Line."Line No.");
-        if SalesCommentLine.FindSet()then repeat SalesComments:=SalesComments + 'Comment: ' + SalesCommentLine.Comment + LineBreak;
+        if SalesCommentLine.FindSet() then
+            repeat
+                SalesComments := SalesComments + 'Comment: ' + SalesCommentLine.Comment + LineBreak;
             until SalesCommentLine.Next() = 0;
-        if SalesComments <> '' then SalesComments:=DelChr(SalesComments, '>', LineBreak)
+        if SalesComments <> '' then
+            SalesComments := DelChr(SalesComments, '>', LineBreak)
         else
-            SalesComments:='';
+            SalesComments := '';
     end;
+
     local procedure GetDShipValues()
     var
     begin
     end;
+
     local procedure GetSalesReceivablesTextValue()
     var
         SalesReceivablesSetup: Record "Sales & Receivables Setup";
     begin
-        if SalesReceivablesSetup.FindFirst()then Orbus_SalesReceivablesTextValue:=SalesReceivablesSetup."Description On Sales Orders";
+        if SalesReceivablesSetup.FindFirst() then Orbus_SalesReceivablesTextValue := SalesReceivablesSetup."Description On Sales Orders";
     end;
+
     local procedure GetUserName()
     var
         User: Record User;
     begin
         User.SetRange("User Security ID", Header.SystemCreatedBy);
-        if User.FindFirst()then Orbus_UserName:=User."Full Name";
+        if User.FindFirst() then Orbus_UserName := User."Full Name";
     end;
+
     local procedure GetLocationName()
     var
         Location: Record Location;
     begin
         Location.SetRange(Code, Header."Location Code");
-        if Location.FindFirst()then Orbus_LocationName:=Location.Name;
+        if Location.FindFirst() then Orbus_LocationName := Location.Name;
     end;
+
     local procedure GetOrderTotal()
     var
         SalesLine: Record "Sales Line";
     begin
         SalesLine.SetRange("Document No.", Line."Document No.");
         SalesLine.CalcSums(Amount);
-        Orbus_OrderTotal:=SalesLine.Amount end;
+        Orbus_OrderTotal := SalesLine.Amount
+    end;
+
     local procedure GetIWValues()
     var
         DSHIP_Package: Record "DSHIP Package Options";
         SalesHeader: Record "Sales Header";
     begin
         DSHIP_Package.SetRange("License Plate No.", Header."No.");
-        if DSHIP_Package.FindFirst()then begin
-            Orbus_FreightTerms:=DSHIP_Package."Payment Type";
-            Orbus_ShippingAcctNo:=DSHIP_Package."Payment Account No.";
+        if DSHIP_Package.FindFirst() then begin
+            Orbus_FreightTerms := DSHIP_Package."Payment Type";
+            Orbus_ShippingAcctNo := DSHIP_Package."Payment Account No.";
         end;
     end;
 }
