@@ -2,6 +2,28 @@ tableextension 55152 CaseWRGListPageExt extends "Case WSG"
 {
     fields
     {
+        /*  modify("Source No.")
+          {
+              trigger OnAfterValidate()
+              var
+                  myInt: Integer;
+              begin
+                  Rec.Validate("Sales Invoice Header No.", Rec."Source No.");
+              end;*/
+        modify(Status)
+        {
+            trigger OnAfterValidate()
+            var
+                IsStatusChanged: Boolean;
+            begin
+                if Rec.Status <> xRec.Status then
+                    IsStatusChanged := true;
+                if IsStatusChanged and (Rec.Status <> Status::New) then begin
+                    if (Rec."Customer Complaint" = '') and (Rec."Customer Expectation" = '') then
+                        Error('Customer Complaint and Customer Expectation must have a value.');
+                end;
+            end;
+        }
         field(55101; "SalesPerson Code"; Text[50])
         {
         }
@@ -35,7 +57,7 @@ tableextension 55152 CaseWRGListPageExt extends "Case WSG"
         field(55109; "Resolution Date 2"; Date)
         {
         }
-        field(55110; "Second Case";Enum YesNo)
+        field(55110; "Second Case"; Enum YesNo)
         {
         }
         field(55111; "Sales Quote No."; Text[100])
@@ -47,7 +69,7 @@ tableextension 55152 CaseWRGListPageExt extends "Case WSG"
         field(55113; "Customer Expectation"; Text[100])
         {
         }
-        field(55114; "Lookup Type";Enum LookupTypeNew)
+        field(55114; "Lookup Type"; Enum LookupTypeNew)
         {
         }
         field(55115; "Sales Invoice Header No."; Text[100])
@@ -100,14 +122,14 @@ tableextension 55152 CaseWRGListPageExt extends "Case WSG"
         }
         modify("Entity No.")
         {
-        trigger OnAfterValidate()
-        var
-            Customer: Record Customer;
-        begin
-            Customer.Reset();
-            Customer.SetRange("No.", Rec."Entity No.");
-            if Customer.FindFirst()then Rec."SalesPerson Code":=Customer."Salesperson Code";
-        end;
+            trigger OnAfterValidate()
+            var
+                Customer: Record Customer;
+            begin
+                Customer.Reset();
+                Customer.SetRange("No.", Rec."Entity No.");
+                if Customer.FindFirst() then Rec."SalesPerson Code" := Customer."Salesperson Code";
+            end;
         }
     }
     keys
@@ -122,4 +144,16 @@ tableextension 55152 CaseWRGListPageExt extends "Case WSG"
         {
         }
     }
+    trigger OnAfterInsert()
+    begin
+        Message('No.:%1', Rec."Source No.");
+        Rec.Validate("Sales Invoice Header No.", Rec."Source No.");
+    end;
+
+    /*trigger OnAfterModify()
+    begin
+        Message('No.:%1', Rec."Source No.");
+        Rec.Validate("Sales Invoice Header No.", Rec."Source No.");
+
+    end;*/
 }

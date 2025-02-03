@@ -11,6 +11,7 @@ pageextension 55159 CasePageExt extends "Case Card WSG"
                 field("Customer Complaint"; Rec."Customer Complaint")
                 {
                     ApplicationArea = All;
+                    ShowMandatory = true;
 
                     trigger OnLookup(var Text: Text): Boolean
                     var
@@ -43,6 +44,7 @@ pageextension 55159 CasePageExt extends "Case Card WSG"
                 field("Customer Expectation"; Rec."Customer Expectation")
                 {
                     ApplicationArea = All;
+                    ShowMandatory = true;
 
                     trigger OnLookup(var Text: Text): Boolean
                     var
@@ -682,6 +684,7 @@ pageextension 55159 CasePageExt extends "Case Card WSG"
                     SalesInvoiceHeader.SetFilter("No.", Rec."Sales Invoice Header No.");
                     if SalesInvoiceHeader.FindFirst() then begin
                         Rec."Sales Invoice Header No." := SalesInvoiceHeader."No.";
+                        Rec."Sales Header No." := SalesInvoiceHeader."Order No.";
                         Rec."Location Code" := SalesInvoiceHeader."Location Code";
                         Rec."SalesPerson Code" := SalesInvoiceHeader."Salesperson Code";
                         Rec."Entity No." := SalesInvoiceHeader."Sell-to Customer No.";
@@ -876,7 +879,8 @@ pageextension 55159 CasePageExt extends "Case Card WSG"
                 var1: Integer;
             begin
                 Contact.Reset();
-                Contact.SetFilter("Company No.", Rec."Entity No.");
+                //Contact.SetFilter("Company No.", Rec."Entity No.");
+                Contact.SetFilter("Company Name", Rec."Entity Name");
                 if Page.RunModal(Page::"Contact List", Contact) = Action::LookupOK then begin
                     Rec."Contact Name" := Contact.Name;
                     Rec."Contact Email 2" := Contact."E-Mail";
@@ -1112,6 +1116,15 @@ pageextension 55159 CasePageExt extends "Case Card WSG"
         SalesRecordForCase.Insert();
     end;
 
+
+    /*  //Check Start
+      trigger OnNewRecord(BelowXrec: Boolean)
+      begin
+          Message('No.:%1', Rec."Source No.");
+          Rec.Validate("Sales Invoice Header No.", Rec."Source No.");
+      end;
+      //Check end
+      */
     trigger OnQueryClosePage(CloseAction: Action): Boolean
     var
         CaseWSG: Record "Case WSG";
