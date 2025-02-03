@@ -89,7 +89,8 @@ pageextension 55142 PostedSalesInvoiceDocExt extends "Posted Sales Invoice"
                     Rec."Work Description".CreateInStream(Inst);
                     Inst.ReadText(Test1);
                     Message('%1', Test1);
-                    if Rec."Work Description".HasValue()then Message('Has Value')
+                    if Rec."Work Description".HasValue() then
+                        Message('Has Value')
                     else
                         Message('No blob value');
                 end;
@@ -112,41 +113,43 @@ pageextension 55142 PostedSalesInvoiceDocExt extends "Posted Sales Invoice"
                     var2: Text;
                     NoSeriesLine: Record "No. Series Line";
                 begin
-                    if Dialog.Confirm('Are you sure you want to insert record into Case HEader tbale based on Sales Invoice HEader record: ' + Rec."No." + '?', true)then begin
-                        var2:=CurrPage.ObjectId(true);
-                        var2:=var2.Replace('Page ', '');
+                    if Dialog.Confirm('Are you sure you want to insert record into Case HEader tbale based on Sales Invoice HEader record: ' + Rec."No." + '?', true) then begin
+                        var2 := CurrPage.ObjectId(true);
+                        var2 := var2.Replace('Page ', '');
                         NoSeriesLine.Reset();
                         NoSeriesLine.SetFilter("Series Code", 'CASE');
-                        if NoSeriesLine.Findfirst()then var1:=IncStr(NoSeriesLine."Last No. Used")
+                        if NoSeriesLine.Findfirst() then
+                            var1 := IncStr(NoSeriesLine."Last No. Used")
                         else
-                            var1:='CASE-00000001';
+                            var1 := 'CASE-00000001';
                         CaseHeader.Init();
-                        CaseHeader."No.":=var1;
-                        CaseHeader."Entity No.":=Rec."Sell-to Customer No.";
-                        CaseHeader."Entity Name":=Rec."Sell-to Customer Name";
-                        CaseHeader."SalesPerson Code":=Rec."Salesperson Code";
-                        CaseHeader."Location Code":=Rec."Location Code";
-                        CaseHeader."Sales Invoice Header No.":=Rec."No.";
-                        CaseHeader."Sales Header No.":=Rec."Order No.";
-                        CaseHeader."Contact Name":=Rec."Sell-to Customer Name";
-                        CaseHeader."Contact Phone":=Rec."Sell-to Phone No.";
-                        CaseHeader."Contact Email 2":=Rec."Sell-to E-Mail";
-                        CaseHeader."External Doc No.":=Rec."External Document No.";
-                        CaseHeader."Source Page Id":=132;
-                        CaseHeader."Source Page Name":=var2;
-                        CaseHeader."Source No.":=Rec."No.";
-                        CaseHeader."Created On DateTime":=CurrentDateTime();
-                        CaseHeader."Created By":=UserId();
-                        if CaseHeader.Insert()then begin
+                        CaseHeader."No." := var1;
+                        CaseHeader."Entity No." := Rec."Sell-to Customer No.";
+                        CaseHeader."Entity Name" := Rec."Sell-to Customer Name";
+                        CaseHeader."SalesPerson Code" := Rec."Salesperson Code";
+                        CaseHeader."Location Code" := Rec."Location Code";
+                        CaseHeader."Sales Invoice Header No." := Rec."No.";
+                        CaseHeader."Sales Header No." := Rec."Order No.";
+                        CaseHeader."Contact Name" := Rec."Sell-to Customer Name";
+                        CaseHeader."Contact Phone" := Rec."Sell-to Phone No.";
+                        CaseHeader."Contact Email 2" := Rec."Sell-to E-Mail";
+                        CaseHeader."External Doc No." := Rec."External Document No.";
+                        CaseHeader."Source Page Id" := 132;
+                        CaseHeader."Source Page Name" := var2;
+                        CaseHeader."Source No." := Rec."No.";
+                        CaseHeader."Created On DateTime" := CurrentDateTime();
+                        CaseHeader."Created By" := UserId();
+                        if CaseHeader.Insert() then begin
                             NoSeriesLine.Reset();
                             NoSeriesLine.SetFilter("Series Code", 'CASE');
-                            if NoSeriesLine.FindFirst()then begin
-                                NoSeriesLine."Last No. Used":=var1;
-                                NoSeriesLine."Last Date Used":=Today();
-                                if NoSeriesLine.Modify()then begin
+                            if NoSeriesLine.FindFirst() then begin
+                                NoSeriesLine."Last No. Used" := var1;
+                                NoSeriesLine."Last Date Used" := Today();
+                                if NoSeriesLine.Modify() then begin
                                     CaseHeader.Reset();
                                     CaseHeader.SetFilter("No.", var1);
-                                    if CaseHeader.FindFirst()then Page.Run(Page::"Case Card WSG", CaseHeader)
+                                    if CaseHeader.FindFirst() then
+                                        Page.Run(Page::"Case Card WSG", CaseHeader)
                                     else
                                         Error('Record was either not inserted into Case table or not found. Please try to insert case record again.');
                                 end;

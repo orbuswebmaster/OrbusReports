@@ -8,11 +8,13 @@ table 55142 CaseLine
         field(2; "Case No."; Text[100])
         {
         }
-        field(3; Type;Enum RecordType)
+        field(3; Type; Enum RecordType)
         {
         }
         field(4; "No."; Text[100])
         {
+            TableRelation = IF (Type = CONST(Item)) Item ELSE IF (Type = CONST(Resource)) Resource;
+
         }
         field(5; "Sales Record No."; Text[100])
         {
@@ -87,38 +89,40 @@ table 55142 CaseLine
         CaseNo: Text;
     begin
         if Rec.Type = Rec.Type::" " then Rec.FieldError(Rec.Type, '"Type" table field must have a value other than "blank" before record can be inserted into "Case line" table');
-        CaseNo:='';
+        CaseNo := '';
         CaseLine.Reset();
-        if CaseLine.FindLast()then Rec."Entry No.":=CaseLine."Entry No." + 1
+        if CaseLine.FindLast() then
+            Rec."Entry No." := CaseLine."Entry No." + 1
         else
-            Rec."Entry No.":=1;
+            Rec."Entry No." := 1;
         SalesRecordForCaseLine.Reset();
         SalesRecordForCaseLine.SetRange("User ID", UserId());
-        if SalesRecordForCaseLine.FindLast()then CaseNo:=SalesRecordForCaseLine."Case No.";
+        if SalesRecordForCaseLine.FindLast() then CaseNo := SalesRecordForCaseLine."Case No.";
         CaseLine.Reset();
         CaseLine.SetFilter("Case No.", CaseNo);
-        if CaseLine.FindLast()then var1:=CaseLine."Line No." + 1
+        if CaseLine.FindLast() then
+            var1 := CaseLine."Line No." + 1
         else
-            var1:=1;
-        Rec."Line No.":=var1;
-    /*CaseWSG.Reset();
-        CaseWSG.SetFilter("No.", CaseNo);
-        if
-        CaseWSG.FindFirst()
-        then
-        begin
-            CaseLine."Sales Record No." := CaseWSG."Sales Header No.";
-            CaseLine."SalesPerson Code" := CaseWSG."SalesPerson Code";
-            CaseLine."Assigned User ID" := CaseWSG."Assigned User ID";
-            CaseLine."Case No." := CaseNo;
-            CaseLine."Contact Name" := CaseWSG."Contact Name";
-            CaseLine."Created By" := UserId();
-            CaseLine."DateTime Created" := CurrentDateTime();
-            CaseLine."Department Code" := CaseWSG."Department Specification";
-            CaseLine.Name := CaseWSG."Entity Name";
-            CaseLine."Reason Code" := CaseWSG."Reason Code";
-            caseline."Resolution Document" := CaseWSG."Resolution Code";
-            CaseLine."Resolution No." := CaseWSG."Resolution No.";
-        end;*/
+            var1 := 1;
+        Rec."Line No." := var1;
+        /*CaseWSG.Reset();
+            CaseWSG.SetFilter("No.", CaseNo);
+            if
+            CaseWSG.FindFirst()
+            then
+            begin
+                CaseLine."Sales Record No." := CaseWSG."Sales Header No.";
+                CaseLine."SalesPerson Code" := CaseWSG."SalesPerson Code";
+                CaseLine."Assigned User ID" := CaseWSG."Assigned User ID";
+                CaseLine."Case No." := CaseNo;
+                CaseLine."Contact Name" := CaseWSG."Contact Name";
+                CaseLine."Created By" := UserId();
+                CaseLine."DateTime Created" := CurrentDateTime();
+                CaseLine."Department Code" := CaseWSG."Department Specification";
+                CaseLine.Name := CaseWSG."Entity Name";
+                CaseLine."Reason Code" := CaseWSG."Reason Code";
+                caseline."Resolution Document" := CaseWSG."Resolution Code";
+                CaseLine."Resolution No." := CaseWSG."Resolution No.";
+            end;*/
     end;
 }
