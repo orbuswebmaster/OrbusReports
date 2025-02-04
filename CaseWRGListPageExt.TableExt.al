@@ -2,25 +2,26 @@ tableextension 55152 CaseWRGListPageExt extends "Case WSG"
 {
     fields
     {
-        /*  modify("Source No.")
-          {
-              trigger OnAfterValidate()
-              var
-                  myInt: Integer;
-              begin
-                  Rec.Validate("Sales Invoice Header No.", Rec."Source No.");
-              end;*/
         modify(Status)
         {
             trigger OnAfterValidate()
             var
                 IsStatusChanged: Boolean;
+                Sales: Record "Related Record WSG";
+                SalesReturnOrder: Record "Sales Header";
+                OpenReturnOrders: Boolean;
             begin
                 if Rec.Status <> xRec.Status then
                     IsStatusChanged := true;
                 if IsStatusChanged and (Rec.Status <> Status::New) then begin
                     if (Rec."Customer Complaint" = '') and (Rec."Customer Expectation" = '') then
                         Error('Customer Complaint and Customer Expectation must have a value.');
+                end;
+                if Rec.Status = Rec.Status::Resolved then begin
+                    SalesReturnOrder.Reset;
+                    Sales.Setrange("Document Page Id", Database::"Sales Header");
+                    if not SalesReturnOrder.ISEmpty then
+                        Error('There are open Return Orders associated with this case.');
                 end;
             end;
         }
@@ -144,16 +145,5 @@ tableextension 55152 CaseWRGListPageExt extends "Case WSG"
         {
         }
     }
-    trigger OnAfterInsert()
-    begin
-        Message('No.:%1', Rec."Source No.");
-        Rec.Validate("Sales Invoice Header No.", Rec."Source No.");
-    end;
 
-    /*trigger OnAfterModify()
-    begin
-        Message('No.:%1', Rec."Source No.");
-        Rec.Validate("Sales Invoice Header No.", Rec."Source No.");
-
-    end;*/
 }
