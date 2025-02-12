@@ -27,8 +27,8 @@ pageextension 55123 SalesOrderDocumentPageExt extends "Sales Order"
             begin
                 Salesperson.Reset();
                 Salesperson.SetRange(Code, Rec."Salesperson Code");
-                if Salesperson.FindFirst()then begin
-                    Rec."SalesPerson Email":=Salesperson."E-Mail";
+                if Salesperson.FindFirst() then begin
+                    Rec."SalesPerson Email" := Salesperson."E-Mail";
                     Rec.Modify();
                 end;
             end;
@@ -41,24 +41,25 @@ pageextension 55123 SalesOrderDocumentPageExt extends "Sales Order"
                 Caption = 'Sell-To Contact No.';
                 ShowMandatory = true;
 
-                trigger OnLookup(var Text: Text): Boolean var
+                trigger OnLookup(var Text: Text): Boolean
+                var
                     Contact: Record Contact;
                     ContactListPage: Page "Contact List";
                 begin
                     Contact.Reset();
                     Contact.SetRange("Company Name", Rec."Sell-to Customer Name");
                     if Page.RunModal(Page::"Contact List", Contact) = Action::LookupOK then begin
-                        Rec."Sell-To Contact No. (Custom)":=Contact."No.";
-                        Rec."Sell-to Contact No.":=Contact."No.";
-                        Rec."Sell-To Email (Custom)":=Contact."E-Mail";
-                        Rec."Sell-to E-Mail":=Contact."E-Mail";
-                        Rec."Sell-To Phone No. (Custom)":=Contact."Phone No.";
-                        Rec."Sell-to Phone No.":=Contact."Phone No.";
-                        Rec."Sell-To Contact Name (Custom)":=Contact.Name;
-                        Rec."Sell-to Contact":=Contact.Name;
-                        Rec."Bill-to Contact No.":=Contact."No.";
-                        Rec."Bill-to Contact":=Contact.Name;
-                        Rec."Ship-to Contact":=Contact.Name;
+                        Rec."Sell-To Contact No. (Custom)" := Contact."No.";
+                        Rec."Sell-to Contact No." := Contact."No.";
+                        Rec."Sell-To Email (Custom)" := Contact."E-Mail";
+                        Rec."Sell-to E-Mail" := Contact."E-Mail";
+                        Rec."Sell-To Phone No. (Custom)" := Contact."Phone No.";
+                        Rec."Sell-to Phone No." := Contact."Phone No.";
+                        Rec."Sell-To Contact Name (Custom)" := Contact.Name;
+                        Rec."Sell-to Contact" := Contact.Name;
+                        Rec."Bill-to Contact No." := Contact."No.";
+                        Rec."Bill-to Contact" := Contact.Name;
+                        //Rec."Ship-to Contact":=Contact.Name;
                         Rec.Modify();
                     end;
                 end;
@@ -68,24 +69,25 @@ pageextension 55123 SalesOrderDocumentPageExt extends "Sales Order"
                 ApplicationArea = All;
                 Caption = 'Sell-To Contact Name';
 
-                trigger OnLookup(var Text: Text): Boolean var
+                trigger OnLookup(var Text: Text): Boolean
+                var
                     Contact: Record Contact;
                     ContactListPage: Page "Contact List";
                 begin
                     Contact.Reset();
                     Contact.SetRange("Company Name", Rec."Sell-to Customer Name");
                     if Page.RunModal(Page::"Contact List", Contact) = Action::LookupOK then begin
-                        Rec."Sell-To Contact No. (Custom)":=Contact."No.";
-                        Rec."Sell-to Contact No.":=Contact."No.";
-                        Rec."Sell-To Email (Custom)":=Contact."E-Mail";
-                        Rec."Sell-to E-Mail":=Contact."E-Mail";
-                        Rec."Sell-To Phone No. (Custom)":=Contact."Phone No.";
-                        Rec."Sell-to Phone No.":=Contact."Phone No.";
-                        Rec."Sell-To Contact Name (Custom)":=Contact.Name;
-                        Rec."Sell-to Contact":=Contact.Name;
-                        Rec."Bill-to Contact No.":=Contact."No.";
-                        Rec."Bill-to Contact":=Contact.Name;
-                        Rec."Ship-to Contact":=Contact.Name;
+                        Rec."Sell-To Contact No. (Custom)" := Contact."No.";
+                        Rec."Sell-to Contact No." := Contact."No.";
+                        Rec."Sell-To Email (Custom)" := Contact."E-Mail";
+                        Rec."Sell-to E-Mail" := Contact."E-Mail";
+                        Rec."Sell-To Phone No. (Custom)" := Contact."Phone No.";
+                        Rec."Sell-to Phone No." := Contact."Phone No.";
+                        Rec."Sell-To Contact Name (Custom)" := Contact.Name;
+                        Rec."Sell-to Contact" := Contact.Name;
+                        Rec."Bill-to Contact No." := Contact."No.";
+                        Rec."Bill-to Contact" := Contact.Name;
+                        //Rec."Ship-to Contact":=Contact.Name;
                         Rec.Modify();
                     end;
                 end;
@@ -126,7 +128,8 @@ pageextension 55123 SalesOrderDocumentPageExt extends "Sales Order"
             var
             begin
                 if Rec."Payment Terms Code" = 'CC' then begin
-                    if(Rec."Payment Method Code" = 'CREDITCARD') or (Rec."Payment Method Code" = '')then exit
+                    if (Rec."Payment Method Code" = 'CREDITCARD') or (Rec."Payment Method Code" = '') then
+                        exit
                     else
                         Error('Only value that is allowed is "Credit Card" or blank value since data/value in payment terms code table field is currently "CC" for this record');
                 end;
@@ -140,20 +143,21 @@ pageextension 55123 SalesOrderDocumentPageExt extends "Sales Order"
                 SalesOrderDocumentPage: Page "Sales Order";
                 var1: Text;
             begin
-                if Rec."Payment Terms Code" = 'CC' then MandatoryVar:=true
+                if Rec."Payment Terms Code" = 'CC' then
+                    MandatoryVar := true
                 else
-                    MandatoryVar:=false;
+                    MandatoryVar := false;
                 UserSetup.Reset();
                 UserSetup.SetRange("User ID", UserId());
-                if UserSetup.FindFirst()then begin
-                    if(UserSetup."Terms Control" = true)then begin
-                        if(Rec."Payment Terms OnOpenPage" = 'CC') or (Rec."Payment Terms OnOpenPage" = 'DR')then begin
+                if UserSetup.FindFirst() then begin
+                    if (UserSetup."Terms Control" = true) then begin
+                        if (Rec."Payment Terms OnOpenPage" = 'CC') or (Rec."Payment Terms OnOpenPage" = 'DR') then begin
                             if Rec."Payment Terms OnOpenPage" = 'CC' then begin
-                                if Rec."Payment Terms Code" = 'CC' then exit
-                                else
-                                begin
+                                if Rec."Payment Terms Code" = 'CC' then
+                                    exit
+                                else begin
                                     if Rec."Payment Terms Code" = 'DR' then begin
-                                        Rec."Payment Terms OnOpenPage":=Rec."Payment Terms Code";
+                                        Rec."Payment Terms OnOpenPage" := Rec."Payment Terms Code";
                                         Rec.Modify();
                                     end
                                     else
@@ -161,27 +165,29 @@ pageextension 55123 SalesOrderDocumentPageExt extends "Sales Order"
                                 end;
                             end;
                             if Rec."Payment Terms OnOpenPage" = 'DR' then begin
-                                if Rec."Payment Terms Code" = 'DR' then exit
-                                else
-                                begin
+                                if Rec."Payment Terms Code" = 'DR' then
+                                    exit
+                                else begin
                                     if Rec."Payment Terms Code" = 'CC' then begin
-                                        Rec."Payment Terms OnOpenPage":=Rec."Payment Terms Code";
-                                        Rec.Modify()end
+                                        Rec."Payment Terms OnOpenPage" := Rec."Payment Terms Code";
+                                        Rec.Modify()
+                                    end
                                     else
                                         Error('Value currently stored in payment terms table field is %1. Can only modify value in this table field to "CC"', Rec."Payment Terms OnOpenPage");
-                                end end;
+                                end
+                            end;
                         end
                         else
                             Error('Cannot modify data/value in payment terms table field due to value not being either "CC" or "DR". Current value: %1', Rec."Payment Terms OnOpenPage");
                     end
-                    else
-                    begin
+                    else begin
                         if Rec."Payment Terms OnOpenPage" <> Rec."Payment Terms Code" then begin
-                            Rec."Payment Terms OnOpenPage":=Rec."Payment Terms Code";
+                            Rec."Payment Terms OnOpenPage" := Rec."Payment Terms Code";
                             Rec.Modify();
                         end;
                     end;
-                end end;
+                end
+            end;
         }
         modify("EFT Payment Method Code -CL-")
         {
@@ -227,7 +233,7 @@ pageextension 55123 SalesOrderDocumentPageExt extends "Sales Order"
             trigger OnAfterValidate()
             var
             begin
-                Rec."Shipping Agent Service Code 2":=Rec."Shipping Agent Service Code";
+                Rec."Shipping Agent Service Code 2" := Rec."Shipping Agent Service Code";
                 Rec.Modify();
             end;
         }
@@ -274,9 +280,10 @@ pageextension 55123 SalesOrderDocumentPageExt extends "Sales Order"
                     ProductionHeader.Reset();
                     ProductionHeader.SetFilter(Status, 'Released|Finished');
                     ProductionHeader.SetRange("Source No.", Rec."No.");
-                    if ProductionHeader.FindLast()then ProductionHeaderNo:=ProductionHeader."No."
+                    if ProductionHeader.FindLast() then
+                        ProductionHeaderNo := ProductionHeader."No."
                     else
-                        ProductionHeaderNo:='';
+                        ProductionHeaderNo := '';
                     InternalReprintReport.GetValues(Rec."No.", Rec."Sell-to Customer Name", Rec."Shipment Date", Rec."Shipping Agent Code", Rec."Shipping Agent Service Code", ProductionHeaderNo, Rec."Assigned User ID", Rec."Location Code");
                     InternalReprintReport.RunModal();
                 end;
@@ -314,28 +321,33 @@ pageextension 55123 SalesOrderDocumentPageExt extends "Sales Order"
             trigger OnBeforeAction()
             var
             begin
-                if(Rec."Shipping Agent Code" = '') and (Rec."Shipping Agent Service Code" = '')then Error('Shipping Agent Code and Shipping Agent Service have a value of "blank". Both fields need a value other than "blank"');
-                if(Rec."Shipping Agent Code" = '')then Error('Shipping Agent Code cannot have a value of "blank"');
+                if (Rec."Shipping Agent Code" = '') and (Rec."Shipping Agent Service Code" = '') then Error('Shipping Agent Code and Shipping Agent Service have a value of "blank". Both fields need a value other than "blank"');
+                if (Rec."Shipping Agent Code" = '') then Error('Shipping Agent Code cannot have a value of "blank"');
                 if Rec."Shipping Agent Service Code" = '' then Error('Shipping Agent Service Code cannot have a value of "blank"');
             end;
         }
     }
-    trigger OnQueryClosePage(CloseAction: Action): Boolean var
+    trigger OnQueryClosePage(CloseAction: Action): Boolean
+    var
     begin
         if Rec."Sell-To Contact No. (Custom)" = '' then Error('"Sell-To-Contact No." table field must have a value other than blank before page can close. Current value is "blank"');
-        if(Rec."Payment Terms Code" = 'CC')then begin
-            if Rec."Payment Method Code" = 'CREDITCARD' then exit
+        if (Rec."Payment Terms Code" = 'CC') then begin
+            if Rec."Payment Method Code" = 'CREDITCARD' then
+                exit
             else
                 Error('Payment Terms code has a value of: %1. Modify Payment Method Code value to "CREDITCARD".', Rec."Payment Terms Code");
         end;
     end;
-    trigger OnDeleteRecord(): Boolean var
+
+    trigger OnDeleteRecord(): Boolean
+    var
         UserSetup: Record "User Setup";
     begin
         UserSetup.Reset();
         UserSetup.SetRange("User ID", UserId());
-        if UserSetup.FindFirst()then if UserSetup."Can Delete Sales Orders" = false then Error('Your user: %1 is not allowed to delete sales orders', UserId());
+        if UserSetup.FindFirst() then if UserSetup."Can Delete Sales Orders" = false then Error('Your user: %1 is not allowed to delete sales orders', UserId());
     end;
+
     trigger OnClosePage()
     var
         DSHIPPackageOptions: Record "DSHIP Package Options";
@@ -343,40 +355,45 @@ pageextension 55123 SalesOrderDocumentPageExt extends "Sales Order"
         if Rec."Payment Type (new)" = '' then begin
             DSHIPPackageOptions.Reset();
             DSHIPPackageOptions.SetRange("Document No.", Rec."No.");
-            if DSHIPPackageOptions.FindFirst()then begin
-                Rec."Payment Type (new)":=Format(DSHIPPackageOptions."Payment Type", 0, '<Text>');
+            if DSHIPPackageOptions.FindFirst() then begin
+                Rec."Payment Type (new)" := Format(DSHIPPackageOptions."Payment Type", 0, '<Text>');
                 Rec.Modify();
             end;
         end;
     end;
+
     trigger OnOpenPage()
     var
         SalesHeader: Record "Sales Header";
     begin
         if Rec."Shipping Agent Service Code 2" <> Rec."Shipping Agent Service Code" then begin
-            Rec."Shipping Agent Service Code 2":=Rec."Shipping Agent Service Code";
+            Rec."Shipping Agent Service Code 2" := Rec."Shipping Agent Service Code";
             Rec.Modify();
         end;
         if Rec."Created At" <> Rec.SystemCreatedAt then begin
-            Rec."Created At":=Rec.SystemCreatedAt;
+            Rec."Created At" := Rec.SystemCreatedAt;
             Rec.Modify();
         end;
         if Rec."Payment Terms OnOpenPage" <> Rec."Payment Terms Code" then begin
-            Rec."Payment Terms OnOpenPage":=Rec."Payment Terms Code";
+            Rec."Payment Terms OnOpenPage" := Rec."Payment Terms Code";
             Rec.Modify();
         end;
     end;
+
     trigger OnAfterGetRecord()
     var
         UserSetup: Record "User Setup";
     begin
         UserSetup.Reset();
         UserSetup.SetRange("User ID", UserId());
-        if UserSetup.FindFirst()then begin
-            if UserSetup."Payment Method Block" = true then EditableVar:=false
+        if UserSetup.FindFirst() then begin
+            if UserSetup."Payment Method Block" = true then
+                EditableVar := false
             else
-                EditableVar:=true end;
+                EditableVar := true
+        end;
     end;
+
     trigger OnAfterGetCurrRecord()
     var
         SalesPerson: Record "Salesperson/Purchaser";
@@ -384,26 +401,32 @@ pageextension 55123 SalesOrderDocumentPageExt extends "Sales Order"
         if Rec."SalesPerson Email" = '' then begin
             SalesPerson.Reset();
             SalesPerson.SetRange(Code, Rec."Salesperson Code");
-            if SalesPerson.FindFirst()then begin
-                if SalesPerson."E-Mail" = '' then exit
-                else
-                begin
-                    Rec."SalesPerson Email":=SalesPerson."E-Mail";
+            if SalesPerson.FindFirst() then begin
+                if SalesPerson."E-Mail" = '' then
+                    exit
+                else begin
+                    Rec."SalesPerson Email" := SalesPerson."E-Mail";
                     Rec.Modify();
                 end;
             end;
         end;
     end;
+
     procedure GetPaymentTermValue(var1: Text)
     var
     begin
-        PaymentTermVar:=var1;
+        PaymentTermVar := var1;
     end;
-    procedure ProducePaymentTermValue(): Text var
+
+    procedure ProducePaymentTermValue(): Text
+    var
     begin
-        exit(PaymentTermVar)end;
-    var EditableVar: Boolean;
-    PaymentTermVar: Text;
-    VisibleVar: Boolean;
-    MandatoryVar: Boolean;
+        exit(PaymentTermVar)
+    end;
+
+    var
+        EditableVar: Boolean;
+        PaymentTermVar: Text;
+        VisibleVar: Boolean;
+        MandatoryVar: Boolean;
 }
