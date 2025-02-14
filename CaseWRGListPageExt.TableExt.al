@@ -9,6 +9,7 @@ tableextension 55152 CaseWRGListPageExt extends "Case WSG"
                 IsStatusChanged: Boolean;
                 Sales: Record "Related Record WSG";
                 SalesReturnOrder: Record "Sales Header";
+                SalesCreditMemo: Record "Sales Cr.Memo Line";
                 OpenReturnOrders: Boolean;
             begin
                 if Rec.Status <> xRec.Status then
@@ -17,11 +18,17 @@ tableextension 55152 CaseWRGListPageExt extends "Case WSG"
                     if (Rec."Customer Complaint" = '') and (Rec."Customer Expectation" = '') then
                         Error('Customer Complaint and Customer Expectation must have a value.');
                 end;
-                if Rec.Status = Rec.Status::Resolved then begin
+                if IsStatusChanged and ((Rec.Status = Status::Resolved) or (Rec.Status = Status::Cancelled)) then begin
                     SalesReturnOrder.Reset;
                     Sales.Setrange("Document Page Id", Database::"Sales Header");
-                    if not SalesReturnOrder.ISEmpty then
-                        Error('There are open Return Orders associated with this case.');
+                    if not SalesReturnOrder.ISEmpty then begin
+                        SalesCreditMemo.Reset;
+                        Sales.SetRange("Document No.", SalesCreditMemo."Document No.");
+                        if not SalesCreditMemo.IsEmpty then
+                            exit
+                        else
+                            Error('There are open Return Orders associated with this case.');
+                    end;
                 end;
             end;
         }
