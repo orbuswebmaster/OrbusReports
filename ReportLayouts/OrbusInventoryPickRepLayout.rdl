@@ -9,7 +9,7 @@
       <am:Name>MSRB</am:Name>
       <am:Version>15.0.20283.0</am:Version>
     </am:UpdatedBy>
-    <am:LastModifiedTimestamp>2025-02-13T21:40:19.1289244Z</am:LastModifiedTimestamp>
+    <am:LastModifiedTimestamp>2025-02-14T14:55:31.2381270Z</am:LastModifiedTimestamp>
   </am:AuthoringMetadata>
   <AutoRefresh>0</AutoRefresh>
   <DataSources>
@@ -2204,7 +2204,7 @@
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value>="Inventory Pick No: " &amp; Fields!PickNo.Value &amp; " / Source No: " &amp; Fields!EncodedSourceDocNo.Value</Value>
+                                      <Value>="Inventory Pick No: " &amp; Fields!PickNo.Value &amp; " / Source No: " &amp; Fields!SourceDocNo.Value</Value>
                                       <Style />
                                     </TextRun>
                                   </TextRuns>
