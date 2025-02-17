@@ -19,7 +19,7 @@ tableextension 55152 CaseWRGListPageExt extends "Case WSG"
                         Error(CustomerComplaintorExpectationErrLbl);
                 end;
 
-                //check if there is an opeen return order which is not posted yet and throw an error.
+                //check if there is an open return order which is not posted yet and throw an error.
                 if IsStatusChanged and ((Rec.Status = Status::Resolved) or (Rec.Status = Status::Cancelled)) then begin
                     RelatedRecordWSG.Setrange("Case No.", Rec."No.");
                     RelatedRecordWSG.Setrange("Table Id", Database::"Sales Header");
@@ -27,10 +27,10 @@ tableextension 55152 CaseWRGListPageExt extends "Case WSG"
                     if RelatedRecordWSG.FindSet() then
                         repeat
                             Clear(OpenReturnOrdersExists);
-                            if SalesHeader.get(RelatedRecordWSG."Document No.") then begin
+                            if SalesHeader.get(SalesHeader."Document Type"::"Return Order", RelatedRecordWSG."Document No.") then begin
                                 SalesCrMemoHeader.Reset();
                                 SalesCrMemoHeader.SetRange("Return Order No.", SalesHeader."No.");
-                                if not SalesCrMemoHeader.FindFirst() then
+                                if SalesCrMemoHeader.IsEmpty() then
                                     OpenReturnOrdersExists := true;
                             end;
                         until (RelatedRecordWSG.Next() = 0) or OpenReturnOrdersExists;
