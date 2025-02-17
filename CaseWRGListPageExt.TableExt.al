@@ -7,28 +7,35 @@ tableextension 55152 CaseWRGListPageExt extends "Case WSG"
             trigger OnAfterValidate()
             var
                 IsStatusChanged: Boolean;
-                Sales: Record "Related Record WSG";
-                SalesReturnOrder: Record "Sales Header";
-                SalesCreditMemo: Record "Sales Cr.Memo Line";
-                OpenReturnOrders: Boolean;
+                RelatedRecordWSG: Record "Related Record WSG";
+                SalesHeader: Record "Sales Header";
+                SalesCrMemoHeader: Record "Sales Cr.Memo Header";
+                OpenReturnOrdersExists: Boolean;
             begin
                 if Rec.Status <> xRec.Status then
                     IsStatusChanged := true;
                 if IsStatusChanged and (Rec.Status <> Status::New) then begin
-                    if (Rec."Customer Complaint" = '') and (Rec."Customer Expectation" = '') then
-                        Error('Customer Complaint and Customer Expectation must have a value.');
+                    if (Rec."Customer Complaint" = '') or (Rec."Customer Expectation" = '') then
+                        Error(CustomerComplaintorExpectationErrLbl);
                 end;
+
+                //check if there is an opeen return order which is not posted yet and throw an error.
                 if IsStatusChanged and ((Rec.Status = Status::Resolved) or (Rec.Status = Status::Cancelled)) then begin
-                    SalesReturnOrder.Reset;
-                    Sales.Setrange("Document Page Id", Database::"Sales Header");
-                    if not SalesReturnOrder.ISEmpty then begin
-                        SalesCreditMemo.Reset;
-                        Sales.SetRange("Document No.", SalesCreditMemo."Document No.");
-                        if not SalesCreditMemo.IsEmpty then
-                            exit
-                        else
-                            Error('There are open Return Orders associated with this case.');
-                    end;
+                    RelatedRecordWSG.Setrange("Case No.", Rec."No.");
+                    RelatedRecordWSG.Setrange("Table Id", Database::"Sales Header");
+                    RelatedRecordWSG.SetRange("Document Page Id", Page::"Sales Return Order");
+                    if RelatedRecordWSG.FindSet() then
+                        repeat
+                            Clear(OpenReturnOrdersExists);
+                            if SalesHeader.get(RelatedRecordWSG."Document No.") then begin
+                                SalesCrMemoHeader.Reset();
+                                SalesCrMemoHeader.SetRange("Return Order No.", SalesHeader."No.");
+                                if not SalesCrMemoHeader.FindFirst() then
+                                    OpenReturnOrdersExists := true;
+                            end;
+                        until (RelatedRecordWSG.Next() = 0) or OpenReturnOrdersExists;
+                    if OpenReturnOrdersExists then
+                        Error(OpenReturnOrderExistsErrLbl);
                 end;
             end;
         }
@@ -152,5 +159,9 @@ tableextension 55152 CaseWRGListPageExt extends "Case WSG"
         {
         }
     }
+
+    var
+        OpenReturnOrderExistsErrLbl: Label 'There are open Return Orders associated with this case.';
+        CustomerComplaintorExpectationErrLbl: Label 'Customer Complaint (or) Customer Expectation cannot be empty.';
 
 }
