@@ -6,36 +6,34 @@ tableextension 55152 CaseWRGListPageExt extends "Case WSG"
         {
             trigger OnAfterValidate()
             var
-                IsStatusChanged: Boolean;
                 RelatedRecordWSG: Record "Related Record WSG";
                 SalesHeader: Record "Sales Header";
                 SalesCrMemoHeader: Record "Sales Cr.Memo Header";
                 OpenReturnOrdersExists: Boolean;
             begin
-                if Rec.Status <> xRec.Status then
-                    IsStatusChanged := true;
-                if IsStatusChanged and (Rec.Status <> Status::New) then begin
-                    if (Rec."Customer Complaint" = '') or (Rec."Customer Expectation" = '') then
+                if Rec.Status <> xRec.Status then begin
+                    if (Rec.Status <> Status::New) and ((Rec."Customer Complaint" = '') or (Rec."Customer Expectation" = '')) then
                         Error(CustomerComplaintorExpectationErrLbl);
-                end;
+                    //check if there is an open return order which is not posted yet and throw an error.
+                    if (Rec.Status = Status::Resolved) or (Rec.Status = Status::Cancelled) then begin
+                        RelatedRecordWSG.SetRange("Case No.", Rec."No.");
+                        RelatedRecordWSG.SetRange("Table Id", Database::"Sales Header");
+                        RelatedRecordWSG.SetRange("Document Page Id", Page::"Sales Return Order");
+                        if RelatedRecordWSG.FindSet() then
+                            repeat
+                                if SalesHeader.Get(SalesHeader."Document Type"::"Return Order", RelatedRecordWSG."Document No.") then begin
+                                    SalesCrMemoHeader.Reset();
+                                    SalesCrMemoHeader.SetRange("Return Order No.", SalesHeader."No.");
+                                    if SalesCrMemoHeader.IsEmpty() then begin
+                                        OpenReturnOrdersExists := true;
+                                        break;
+                                    end;
+                                end;
+                            until RelatedRecordWSG.Next() = 0;
 
-                //check if there is an open return order which is not posted yet and throw an error.
-                if IsStatusChanged and ((Rec.Status = Status::Resolved) or (Rec.Status = Status::Cancelled)) then begin
-                    RelatedRecordWSG.Setrange("Case No.", Rec."No.");
-                    RelatedRecordWSG.Setrange("Table Id", Database::"Sales Header");
-                    RelatedRecordWSG.SetRange("Document Page Id", Page::"Sales Return Order");
-                    if RelatedRecordWSG.FindSet() then
-                        repeat
-                            Clear(OpenReturnOrdersExists);
-                            if SalesHeader.get(SalesHeader."Document Type"::"Return Order", RelatedRecordWSG."Document No.") then begin
-                                SalesCrMemoHeader.Reset();
-                                SalesCrMemoHeader.SetRange("Return Order No.", SalesHeader."No.");
-                                if SalesCrMemoHeader.IsEmpty() then
-                                    OpenReturnOrdersExists := true;
-                            end;
-                        until (RelatedRecordWSG.Next() = 0) or OpenReturnOrdersExists;
-                    if OpenReturnOrdersExists then
-                        Error(OpenReturnOrderExistsErrLbl);
+                        if OpenReturnOrdersExists then
+                            Error(OpenReturnOrderExistsErrLbl);
+                    end;
                 end;
             end;
         }
