@@ -1,6 +1,6 @@
 reportextension 55110 OrbusPickExt extends "Picking List"
 {
-    RDLCLayout = './ReportLayouts/OrbusPickSlip.rdl';
+    //RDLCLayout = './ReportLayouts/OrbusPickSlip.rdl';
 
     dataset
     {
@@ -300,7 +300,7 @@ reportextension 55110 OrbusPickExt extends "Picking List"
                         ShipFromCountryCode := DShipShipmentOptions."Country/Region Code";
                     end;
                 end;
-                //GetBarcodes();
+                GetBarcodes();
                 GetCurrentDateandTime();
                 GetAssemblyItems();
             end;
@@ -311,9 +311,26 @@ reportextension 55110 OrbusPickExt extends "Picking List"
             var
             begin
                 WarehouseShipmentNoText := WhseActLine."Whse. Document No.";
-                //GetBarcodesForLineNo();
+                GetBarcodesForLineNo();
                 /*GetNonInventoryItemsFromSO();*/
             end;
+        }
+    }
+    rendering
+    {
+        layout(OrbusPickSlip)
+        {
+            Type = RDLC;
+            Caption = 'OrbusPickSlip';
+            Summary = 'Regular Pick Slip';
+            LayoutFile = './ReportLayouts/OrbusPickSlip.rdl';
+        }
+        layout(OrbusInventoryPickSlip)
+        {
+            Type = RDLC;
+            Caption = 'OrbusInventoryPickSlip';
+            Summary = 'Inventory Pick Slip';
+            LayoutFile = './ReportLayouts/OrbusInventoryPickSlip.rdl';
         }
     }
     trigger OnPreReport()
@@ -406,7 +423,8 @@ reportextension 55110 OrbusPickExt extends "Picking List"
         BarcodeString2 := SourceDocNo;
         BarcodeFontProviderInterface.ValidateInput(BarcodeString, BarcodeSymbology);
         BarcodeFontProviderInterface.ValidateInput(BarcodeString2, BarcodeSymbology);
-        BarcodeFontProviderInterface.ValidateInput(BarcodeString3, BarcodeSymbology);
+        if "Warehouse Activity Header".Type <> "Warehouse Activity Header".Type::"Invt. Pick" then
+            BarcodeFontProviderInterface.ValidateInput(BarcodeString3, BarcodeSymbology);
         EncodedWareShipmentHeaderNo := BarcodeFontProviderInterface.EncodeFont(BarcodeString, BarcodeSymbology);
         EncodedSourceDocNo := BarcodeFontProviderInterface.EncodeFont(BarcodeString2, BarcodeSymbology);
         WarehouseShipmentNoBarcode := BarcodeFontProviderInterface.EncodeFont(BarcodeString3, BarcodeSymbology);
