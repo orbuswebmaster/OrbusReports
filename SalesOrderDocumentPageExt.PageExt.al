@@ -332,7 +332,7 @@ pageextension 55123 SalesOrderDocumentPageExt extends "Sales Order"
     begin
         if Rec."Sell-To Contact No. (Custom)" = '' then Error('"Sell-To-Contact No." table field must have a value other than blank before page can close. Current value is "blank"');
         if (Rec."Payment Terms Code" = 'CC') then begin
-            if Rec."Payment Method Code" = 'CREDITCARD' then
+            if (Rec."Payment Method Code" = 'CREDITCARD') or (Rec."Payment Method Code" = 'CC MAG') then
                 exit
             else
                 Error('Payment Terms code has a value of: %1. Modify Payment Method Code value to "CREDITCARD".', Rec."Payment Terms Code");
