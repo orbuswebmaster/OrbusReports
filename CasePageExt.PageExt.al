@@ -11,6 +11,7 @@ pageextension 55159 CasePageExt extends "Case Card WSG"
                 field("Customer Complaint"; Rec."Customer Complaint")
                 {
                     ApplicationArea = All;
+                    ShowMandatory = true;
 
                     trigger OnLookup(var Text: Text): Boolean
                     var
@@ -43,6 +44,7 @@ pageextension 55159 CasePageExt extends "Case Card WSG"
                 field("Customer Expectation"; Rec."Customer Expectation")
                 {
                     ApplicationArea = All;
+                    ShowMandatory = true;
 
                     trigger OnLookup(var Text: Text): Boolean
                     var
@@ -682,6 +684,7 @@ pageextension 55159 CasePageExt extends "Case Card WSG"
                     SalesInvoiceHeader.SetFilter("No.", Rec."Sales Invoice Header No.");
                     if SalesInvoiceHeader.FindFirst() then begin
                         Rec."Sales Invoice Header No." := SalesInvoiceHeader."No.";
+                        Rec."Sales Header No." := SalesInvoiceHeader."Order No.";
                         Rec."Location Code" := SalesInvoiceHeader."Location Code";
                         Rec."SalesPerson Code" := SalesInvoiceHeader."Salesperson Code";
                         Rec."Entity No." := SalesInvoiceHeader."Sell-to Customer No.";
@@ -876,7 +879,8 @@ pageextension 55159 CasePageExt extends "Case Card WSG"
                 var1: Integer;
             begin
                 Contact.Reset();
-                Contact.SetFilter("Company No.", Rec."Entity No.");
+                //Contact.SetFilter("Company No.", Rec."Entity No.");
+                Contact.SetFilter("Company Name", Rec."Entity Name");
                 if Page.RunModal(Page::"Contact List", Contact) = Action::LookupOK then begin
                     Rec."Contact Name" := Contact.Name;
                     Rec."Contact Email 2" := Contact."E-Mail";
@@ -1124,7 +1128,11 @@ pageextension 55159 CasePageExt extends "Case Card WSG"
                 if Rec."Reason Notes" = '' then Error('"Reason Notes" table field cannot have a value of blank. Current value is blank');
             end;
         end;
-        if (Rec."Contact Name" = '') or (Rec."Entity Name" = '') or (Rec."Must Arrive Date" = 0D) then Error('All fields that have a red astericks (required table fields) must have a value other than "blank"');
+        //if (Rec."Contact Name" = '') or (Rec."Entity Name" = '') or (Rec."Must Arrive Date" = 0D) then Error('All fields that have a red astericks (required table fields) must have a value other than "blank"');
+        if not CheckMandatoryFields() then
+            exit(false);
+
+        exit(true);
     end;
 
     var
@@ -1147,6 +1155,31 @@ pageextension 55159 CasePageExt extends "Case Card WSG"
         MandatoryVarCustomerComplaint: Text;
         OpenSalesHeader: Text;
         OpenSalesInvoiceHeader: Text;
+
+    procedure CheckMandatoryFields(): Boolean
+    var
+        MissingFields: Text;
+    begin
+        MissingFields := '';
+
+        if Rec."Contact Name" = '' then
+            MissingFields := 'Contact Name, ';
+        if Rec."Customer Complaint" = '' then
+            MissingFields := MissingFields + 'Customer Complaint, ';
+        if Rec."Customer Expectation" = '' then
+            MissingFields := MissingFields + 'Customer Expectation, ';
+        if Rec."Must Arrive Date" = 0D then
+            MissingFields := MissingFields + 'Must Arrive Date, ';
+        if Rec."Entity Name" = '' then
+            MissingFields := MissingFields + 'Entity Name, ';
+
+        if MissingFields <> '' then begin
+            MissingFields := CopyStr(MissingFields, 1, StrLen(MissingFields) - 2);
+            if not Confirm('The following required field(s) is/are not completed: %1. Do you want to proceed without entering this information?', false, MissingFields) then
+                exit(false);
+        end;
+        exit(true);
+    end;
 
     procedure ModifySPCaseLines()
     var
@@ -1177,6 +1210,7 @@ pageextension 55159 CasePageExt extends "Case Card WSG"
                 end;
             until CaseLine.Next() = 0;
     end;
+
 
     procedure ModifyAssignedUserIDCaseLines()
     var

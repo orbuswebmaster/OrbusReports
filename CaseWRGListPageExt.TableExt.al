@@ -2,6 +2,41 @@ tableextension 55152 CaseWRGListPageExt extends "Case WSG"
 {
     fields
     {
+        modify(Status)
+        {
+            trigger OnAfterValidate()
+            var
+                RelatedRecordWSG: Record "Related Record WSG";
+                SalesHeader: Record "Sales Header";
+                SalesCrMemoHeader: Record "Sales Cr.Memo Header";
+                OpenReturnOrdersExists: Boolean;
+            begin
+                if Rec.Status <> xRec.Status then begin
+                    if (Rec.Status <> Status::New) and ((Rec."Customer Complaint" = '') or (Rec."Customer Expectation" = '')) then
+                        Error(CustomerComplaintorExpectationErrLbl);
+                    //check if there is an open return order which is not posted yet and throw an error.
+                    if (Rec.Status = Status::Resolved) or (Rec.Status = Status::Cancelled) then begin
+                        RelatedRecordWSG.SetRange("Case No.", Rec."No.");
+                        RelatedRecordWSG.SetRange("Table Id", Database::"Sales Header");
+                        RelatedRecordWSG.SetRange("Document Page Id", Page::"Sales Return Order");
+                        if RelatedRecordWSG.FindSet() then
+                            repeat
+                                if SalesHeader.Get(SalesHeader."Document Type"::"Return Order", RelatedRecordWSG."Document No.") then begin
+                                    SalesCrMemoHeader.Reset();
+                                    SalesCrMemoHeader.SetRange("Return Order No.", SalesHeader."No.");
+                                    if SalesCrMemoHeader.IsEmpty() then begin
+                                        OpenReturnOrdersExists := true;
+                                        break;
+                                    end;
+                                end;
+                            until RelatedRecordWSG.Next() = 0;
+
+                        if OpenReturnOrdersExists then
+                            Error(OpenReturnOrderExistsErrLbl);
+                    end;
+                end;
+            end;
+        }
         field(55101; "SalesPerson Code"; Text[50])
         {
         }
@@ -35,7 +70,7 @@ tableextension 55152 CaseWRGListPageExt extends "Case WSG"
         field(55109; "Resolution Date 2"; Date)
         {
         }
-        field(55110; "Second Case";Enum YesNo)
+        field(55110; "Second Case"; Enum YesNo)
         {
         }
         field(55111; "Sales Quote No."; Text[100])
@@ -47,7 +82,7 @@ tableextension 55152 CaseWRGListPageExt extends "Case WSG"
         field(55113; "Customer Expectation"; Text[100])
         {
         }
-        field(55114; "Lookup Type";Enum LookupTypeNew)
+        field(55114; "Lookup Type"; Enum LookupTypeNew)
         {
         }
         field(55115; "Sales Invoice Header No."; Text[100])
@@ -100,14 +135,14 @@ tableextension 55152 CaseWRGListPageExt extends "Case WSG"
         }
         modify("Entity No.")
         {
-        trigger OnAfterValidate()
-        var
-            Customer: Record Customer;
-        begin
-            Customer.Reset();
-            Customer.SetRange("No.", Rec."Entity No.");
-            if Customer.FindFirst()then Rec."SalesPerson Code":=Customer."Salesperson Code";
-        end;
+            trigger OnAfterValidate()
+            var
+                Customer: Record Customer;
+            begin
+                Customer.Reset();
+                Customer.SetRange("No.", Rec."Entity No.");
+                if Customer.FindFirst() then Rec."SalesPerson Code" := Customer."Salesperson Code";
+            end;
         }
     }
     keys
@@ -122,4 +157,9 @@ tableextension 55152 CaseWRGListPageExt extends "Case WSG"
         {
         }
     }
+
+    var
+        OpenReturnOrderExistsErrLbl: Label 'There are open Return Orders associated with this case.';
+        CustomerComplaintorExpectationErrLbl: Label 'Customer Complaint (or) Customer Expectation cannot be empty.';
+
 }

@@ -25,6 +25,14 @@ pageextension 55162 CaseListExt extends "Case List WSG"
             {
                 ApplicationArea = All;
             }
+            field("Responsible Owner Current"; Rec."Responsible Owner Current")
+            {
+                ApplicationArea = All;
+            }
+            field("CS Status"; Rec."CS Status")
+            {
+                ApplicationArea = All;
+            }
         }
     }
     actions
