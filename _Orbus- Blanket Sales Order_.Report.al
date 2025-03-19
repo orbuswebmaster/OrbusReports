@@ -110,18 +110,6 @@ report 55103 "Orbus- Blanket Sales Order"
             column(CompanyVATRegistrationNo_Lbl; CompanyInfo.GetVATRegistrationNumberLbl())
             {
             }
-            column(CompanyLegalOffice; CompanyInfo.GetLegalOffice())
-            {
-            }
-            column(CompanyLegalOffice_Lbl; CompanyInfo.GetLegalOfficeLbl())
-            {
-            }
-            column(CompanyCustomGiro; CompanyInfo.GetCustomGiro())
-            {
-            }
-            column(CompanyCustomGiro_Lbl; CompanyInfo.GetCustomGiroLbl())
-            {
-            }
             column(CompanyLegalStatement; GetLegalStatement())
             {
             }
