@@ -3818,18 +3818,6 @@ i+LduZP39igKUejHeI7sjeaqJBnSdEBbRb+SrPc5RCf4E+RvIIO4/l9if9Z5C/flp3QEfYhVHNn7oL5D
         <Field Name="CompanyVATRegistrationNo_Lbl">
           <DataField>CompanyVATRegistrationNo_Lbl</DataField>
         </Field>
-        <Field Name="CompanyLegalOffice">
-          <DataField>CompanyLegalOffice</DataField>
-        </Field>
-        <Field Name="CompanyLegalOffice_Lbl">
-          <DataField>CompanyLegalOffice_Lbl</DataField>
-        </Field>
-        <Field Name="CompanyCustomGiro">
-          <DataField>CompanyCustomGiro</DataField>
-        </Field>
-        <Field Name="CompanyCustomGiro_Lbl">
-          <DataField>CompanyCustomGiro_Lbl</DataField>
-        </Field>
         <Field Name="CompanyLegalStatement">
           <DataField>CompanyLegalStatement</DataField>
         </Field>
