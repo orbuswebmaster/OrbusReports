@@ -9,7 +9,8 @@ pageextension 55115 CustomerCardPageExt extends "Customer Card"
                 ApplicationArea = All;
                 Caption = 'Magento Contact No.';
 
-                trigger OnLookup(var Text: Text): Boolean var
+                trigger OnLookup(var Text: Text): Boolean
+                var
                     Contact: Record Contact;
                     ContactListPage: Page "Contact List";
                     var1: Text;
@@ -18,20 +19,22 @@ pageextension 55115 CustomerCardPageExt extends "Customer Card"
                     Contact.FilterGroup(20);
                     Contact.SetRange("Company Name", Rec.Name);
                     if Page.RunModal(Page::"Contact List", Contact) = Action::LookupOK then begin
-                        Rec."Magento Contact No.":=Contact."No.";
-                        Rec."Magento Contact Name":=Contact.Name;
-                        Rec."Magento Contact Email":=Contact."E-Mail";
+                        Rec."Magento Contact No." := Contact."No.";
+                        Rec."Magento Contact Name" := Contact.Name;
+                        Rec."Magento Contact Email" := Contact."E-Mail";
                         Rec.Modify();
                     end;
                     Contact.FilterGroup(0);
                 end;
+
                 trigger OnValidate()
                 var
                     Contact: Record Contact;
                 begin
                     Contact.Reset();
                     Contact.SetRange("No.", Rec."Magento Contact No.");
-                    if Contact.FindFirst()then exit
+                    if Contact.FindFirst() then
+                        exit
                     else
                         Error('Data in this table field nees to equal an exisiting Contact No.');
                 end;
@@ -41,7 +44,8 @@ pageextension 55115 CustomerCardPageExt extends "Customer Card"
                 ApplicationArea = All;
                 Caption = 'Magento Contact Name';
 
-                trigger OnLookup(var Text: Text): Boolean var
+                trigger OnLookup(var Text: Text): Boolean
+                var
                     Contact: Record Contact;
                     ContactListPage: Page "Contact List";
                     var1: Text;
@@ -50,20 +54,22 @@ pageextension 55115 CustomerCardPageExt extends "Customer Card"
                     Contact.FilterGroup(20);
                     Contact.SetRange("Company Name", Rec.Name);
                     if Page.RunModal(Page::"Contact List", Contact) = Action::LookupOK then begin
-                        Rec."Magento Contact Name":=Contact.Name;
-                        Rec."Magento Contact No.":=Contact."No.";
-                        Rec."Magento Contact Email":=Contact."E-Mail";
+                        Rec."Magento Contact Name" := Contact.Name;
+                        Rec."Magento Contact No." := Contact."No.";
+                        Rec."Magento Contact Email" := Contact."E-Mail";
                         Rec.Modify();
                     end;
                     Contact.FilterGroup(0);
                 end;
+
                 trigger OnValidate()
                 var
                     Contact: Record Contact;
                 begin
                     Contact.Reset();
                     Contact.SetRange(Name, Rec."Magento Contact Name");
-                    if Contact.FindFirst()then exit
+                    if Contact.FindFirst() then
+                        exit
                     else
                         Error('Data in this table field needs to equal an exisiting Contact Name');
                 end;
@@ -89,7 +95,7 @@ pageextension 55115 CustomerCardPageExt extends "Customer Card"
                 begin
                     SalesInvoiceHeader.Reset();
                     SalesInvoiceHeader.SetRange("Sell-to Customer No.", Rec."No.");
-                    if SalesInvoiceHeader.FindLast()then Page.Run(Page::"Posted Sales Invoice", SalesInvoiceHeader);
+                    if SalesInvoiceHeader.FindLast() then Page.Run(Page::"Posted Sales Invoice", SalesInvoiceHeader);
                 end;
             }
             group(test)
@@ -108,11 +114,12 @@ pageextension 55115 CustomerCardPageExt extends "Customer Card"
                     begin
                         SalesInvoiceHeader.Reset();
                         SalesInvoiceHeader.SetRange("Sell-to Customer No.", Rec."No.");
-                        if SalesInvoiceHeader.FindLast()then begin
-                            Rec."Last Invoice Date":=SalesInvoiceHeader."Posting Date";
-                            if Rec.Modify()then VisibleVar1:=false
+                        if SalesInvoiceHeader.FindLast() then begin
+                            Rec."Last Invoice Date" := SalesInvoiceHeader."Posting Date";
+                            if Rec.Modify() then
+                                VisibleVar1 := false
                             else
-                                VisibleVar1:=true;
+                                VisibleVar1 := true;
                         end;
                     end;
                 }
@@ -140,7 +147,7 @@ pageextension 55115 CustomerCardPageExt extends "Customer Card"
                     ReportSelections.Reset();
                     ReportSelections.SetRange(Usage, ReportSelections.Usage::"C.Statement");
                     ReportSelections.FindFirst();
-                    SelectedReport:=ReportSelections."Report ID";
+                    SelectedReport := ReportSelections."Report ID";
                     CLE.Reset();
                     CLE.SetRange("Customer No.", Rec."No.");
                     Report.RunModal(SelectedReport, true, true, CLE);
@@ -164,63 +171,67 @@ pageextension 55115 CustomerCardPageExt extends "Customer Card"
                     var3: Text;
                     var4: Text;
                 begin
-                    SalesInvoiceHeader.Reset();
-                    SalesInvoiceHeader.SetRange("Sell-to Customer No.", Rec."No.");
-                    if SalesInvoiceHeader.FindFirst()then Report.RunModal(Report::CreditCardTransactions, true, true, SalesInvoiceHeader);
-                    var1:=1.18;
-                    if(var1 > 1.13) and (var1 <= 1.25)then var1:=1.25;
-                    Message('%1', Format(var1));
+
+                    // SalesInvoiceHeader.Reset();
+                    // SalesInvoiceHeader.SetRange("Sell-to Customer No.", Rec."No.");
+                    // if SalesInvoiceHeader.FindFirst()then Report.RunModal(Report::CreditCardTransactions, true, true, SalesInvoiceHeader);
+                    // var1:=1.18;
+                    // if(var1 > 1.13) and (var1 <= 1.25)then var1:=1.25;
+                    // Message('%1', Format(var1));
                 end;
             }
-        /*action(UpdateLastInvoiceDate)
-            {
-                ApplicationArea = All;
-                Caption = 'Update Last Invoice Date';
-                Promoted = true;
-                PromotedCategory = Process;
+            /*action(UpdateLastInvoiceDate)
+                {
+                    ApplicationArea = All;
+                    Caption = 'Update Last Invoice Date';
+                    Promoted = true;
+                    PromotedCategory = Process;
 
 
-                trigger OnAction()
-                var
-                    SalesInvoiceHeader: Record "Sales Invoice Header";
-                begin
-                    SalesInvoiceHeader.Reset();
-                    SalesInvoiceHeader.SetRange("Sell-to Customer No.", Rec."No.");
-                    if
-                    SalesInvoiceHeader.FindLast()
-                    then begin
+                    trigger OnAction()
+                    var
+                        SalesInvoiceHeader: Record "Sales Invoice Header";
+                    begin
+                        SalesInvoiceHeader.Reset();
+                        SalesInvoiceHeader.SetRange("Sell-to Customer No.", Rec."No.");
                         if
-                        Rec."Last Invoice Date" <> SalesInvoiceHeader."Posting Date"
+                        SalesInvoiceHeader.FindLast()
                         then begin
-                            Rec."Last Invoice Date" := SalesInvoiceHeader."Posting Date";
-                            Rec.Modify();
+                            if
+                            Rec."Last Invoice Date" <> SalesInvoiceHeader."Posting Date"
+                            then begin
+                                Rec."Last Invoice Date" := SalesInvoiceHeader."Posting Date";
+                                Rec.Modify();
+                            end;
                         end;
                     end;
-                end;
-            }*/
+                }*/
         }
         modify("Report Statement")
         {
             Visible = false;
         }
     }
-    var UpdateLastInvoiceDate: Text;
-    VisibleVar1: Boolean;
+    var
+        UpdateLastInvoiceDate: Text;
+        VisibleVar1: Boolean;
+
     trigger OnAfterGetCurrRecord()
     var
         Customer: Record Customer;
         SalesInvoiceHeader: Record "Sales Invoice Header";
     begin
-        UpdateLastInvoiceDate:='Update Last Invoice Date (Not up-to-date)';
+        UpdateLastInvoiceDate := 'Update Last Invoice Date (Not up-to-date)';
         Customer.Reset();
         Customer.SetRange("No.", Rec."No.");
-        if Customer.FindFirst()then begin
+        if Customer.FindFirst() then begin
             SalesInvoiceHeader.Reset();
             SalesInvoiceHeader.SetRange("Sell-to Customer No.", Rec."No.");
-            if SalesInvoiceHeader.FindLast()then begin
-                if Rec."Last Invoice Date" = SalesInvoiceHeader."Posting Date" then VisibleVar1:=false
+            if SalesInvoiceHeader.FindLast() then begin
+                if Rec."Last Invoice Date" = SalesInvoiceHeader."Posting Date" then
+                    VisibleVar1 := false
                 else
-                    VisibleVar1:=true;
+                    VisibleVar1 := true;
             end;
         end;
     end;
