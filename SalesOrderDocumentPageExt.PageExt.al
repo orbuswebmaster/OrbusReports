@@ -189,10 +189,10 @@ pageextension 55123 SalesOrderDocumentPageExt extends "Sales Order"
                 end
             end;
         }
-        modify("EFT Payment Method Code -CL-")
-        {
-            Editable = EditableVar;
-        }
+        // modify("EFT Payment Method Code -CL-")
+        // {
+        //     Editable = EditableVar;
+        // }
         addafter("Needs Approval")
         {
             field("Art Email"; Rec."Art Email")
