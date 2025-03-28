@@ -59,6 +59,12 @@
       "publisher": "Orbus"
     },
     {
+      "id": "0f30fcab-5ea0-4345-ba83-a32015759fbe",
+      "name": "Versapay Payments",
+      "version": "4.4.0.4646",
+      "publisher": "Varsapay"
+    },
+    {
       "id": "df96d6a1-d9e1-40bf-8677-4292d3e7e73c",
       "name": "RealLicensing",
       "version": "4.200.1.130",

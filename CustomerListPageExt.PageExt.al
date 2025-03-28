@@ -36,7 +36,7 @@ pageextension 55114 CustomerListPageExt extends "Customer List"
                     ReportSelections.Reset();
                     ReportSelections.SetRange(Usage, ReportSelections.Usage::"C.Statement");
                     ReportSelections.FindFirst();
-                    SelectedReport := ReportSelections."Report ID";
+                    SelectedReport:=ReportSelections."Report ID";
                     CLE.Reset();
                     CLE.SetRange("Customer No.", Rec."No.");
                     Report.RunModal(SelectedReport, true, true, CLE);
@@ -54,7 +54,7 @@ pageextension 55114 CustomerListPageExt extends "Customer List"
                 var
                     Customer: Record Customer;
                 begin
-                    //Report.RunModal(Report::CreditCardTransactions, true, true);
+                    Report.RunModal(Report::CreditCardTransactions, true, true);
                 end;
             }
         }
@@ -63,38 +63,35 @@ pageextension 55114 CustomerListPageExt extends "Customer List"
             Visible = false;
         }
     }
-    procedure ProduceValues2(): Text
-    var
+    procedure ProduceValues2(): Text var
         Customer: Record Customer;
         var1: Text;
     begin
-        var1 := '';
+        var1:='';
         Customer.Reset();
         CurrPage.SetSelectionFilter(Customer);
-        if Customer.FindSet() then
-            repeat
-                var1 := var1 + Customer.Name + '|';
+        if Customer.FindSet()then repeat var1:=var1 + Customer.Name + '|';
             until Customer.Next() = 0;
-        var1 := DelChr(var1, '>', '|');
+        var1:=DelChr(var1, '>', '|');
         exit(var1);
     end;
-    /*trigger OnAfterGetRecord()
-        var
-        SalesInvoiceHeader: Record "Sales Invoice Header";
+/*trigger OnAfterGetRecord()
+    var
+    SalesInvoiceHeader: Record "Sales Invoice Header";
+    begin
+        SalesInvoiceHeader.Reset();
+        SalesInvoiceHeader.SetRange("Sell-to Customer No.", Rec."No.");
+        if
+        SalesInvoiceHeader.FindLast()
+        then
         begin
-            SalesInvoiceHeader.Reset();
-            SalesInvoiceHeader.SetRange("Sell-to Customer No.", Rec."No.");
             if
-            SalesInvoiceHeader.FindLast()
+            Rec."Last Invoice Date" <> SalesInvoiceHeader."Posting Date"
             then
             begin
-                if
-                Rec."Last Invoice Date" <> SalesInvoiceHeader."Posting Date"
-                then
-                begin
-                    Rec."Last Invoice Date" := SalesInvoiceHeader."Posting Date";
-                    Rec.Modify();
-                end;
+                Rec."Last Invoice Date" := SalesInvoiceHeader."Posting Date";
+                Rec.Modify();
             end;
-        end;*/
+        end;
+    end;*/
 }
